@@ -1,0 +1,649 @@
+{
+  "schemaVersion": 1,
+  "tool": {
+    "name": "specdiff",
+    "version": "0.1.0"
+  },
+  "base": {
+    "file": "examples/bookstore/v1.yaml",
+    "openapi": "3.0.3",
+    "title": "Lantern Books API",
+    "version": "1.0.0"
+  },
+  "head": {
+    "file": "examples/bookstore/v2.yaml",
+    "openapi": "3.0.3",
+    "title": "Lantern Books API",
+    "version": "2.0.0"
+  },
+  "changes": [
+    {
+      "id": "PARAM_ADDED_OPTIONAL",
+      "severity": "safe",
+      "operation": "GET /authors",
+      "location": {
+        "base": null,
+        "head": "paths./authors.get.parameters.query.sort"
+      },
+      "message": "optional query parameter \"sort\" added"
+    },
+    {
+      "id": "REQ_CONSTRAINT_TIGHTENED",
+      "severity": "warning",
+      "operation": "POST /authors",
+      "location": {
+        "base": "paths./authors.post.requestBody.content.application/json.schema.properties.slug",
+        "head": "paths./authors.post.requestBody.content.application/json.schema.properties.slug"
+      },
+      "message": "request body application/json: pattern of \"slug\" changed from \"^[a-z0-9-]+$\" to \"^[a-z0-9_-]+$\""
+    },
+    {
+      "id": "REQ_CONSTRAINT_TIGHTENED",
+      "severity": "warning",
+      "operation": "PUT /authors/{authorId}",
+      "location": {
+        "base": "paths./authors/{authorId}.put.requestBody.content.application/json.schema.properties.slug",
+        "head": "paths./authors/{authorId}.put.requestBody.content.application/json.schema.properties.slug"
+      },
+      "message": "request body application/json: pattern of \"slug\" changed from \"^[a-z0-9-]+$\" to \"^[a-z0-9_-]+$\""
+    },
+    {
+      "id": "OP_REMOVED",
+      "severity": "breaking",
+      "operation": "DELETE /authors/{authorId}",
+      "location": {
+        "base": "paths./authors/{authorId}.delete",
+        "head": null
+      },
+      "message": "operation DELETE /authors/{authorId} removed"
+    },
+    {
+      "id": "RESP_ENUM_WIDENED",
+      "severity": "warning",
+      "operation": "GET /authors/{authorId}/books",
+      "location": {
+        "base": "paths./authors/{authorId}/books.get.responses.200.content.application/json.schema.items.properties.format",
+        "head": "paths./authors/{authorId}/books.get.responses.200.content.application/json.schema.items.properties.format"
+      },
+      "message": "200 application/json: enum of \"value[].format\" widened: added \"audiobook\""
+    },
+    {
+      "id": "RESP_PROPERTY_ADDED",
+      "severity": "safe",
+      "operation": "GET /authors/{authorId}/books",
+      "location": {
+        "base": null,
+        "head": "paths./authors/{authorId}/books.get.responses.200.content.application/json.schema.items.properties.language"
+      },
+      "message": "200 application/json: property \"value[].language\" added"
+    },
+    {
+      "id": "RESP_PROPERTY_REMOVED",
+      "severity": "breaking",
+      "operation": "GET /authors/{authorId}/books",
+      "location": {
+        "base": "paths./authors/{authorId}/books.get.responses.200.content.application/json.schema.items.properties.subtitle",
+        "head": null
+      },
+      "message": "200 application/json: property \"value[].subtitle\" removed"
+    },
+    {
+      "id": "RESP_ENUM_WIDENED",
+      "severity": "warning",
+      "operation": "GET /books",
+      "location": {
+        "base": "paths./books.get.responses.200.content.application/json.schema.properties.items.items.properties.format",
+        "head": "paths./books.get.responses.200.content.application/json.schema.properties.items.items.properties.format"
+      },
+      "message": "200 application/json: enum of \"items[].format\" widened: added \"audiobook\""
+    },
+    {
+      "id": "RESP_PROPERTY_ADDED",
+      "severity": "safe",
+      "operation": "GET /books",
+      "location": {
+        "base": null,
+        "head": "paths./books.get.responses.200.content.application/json.schema.properties.items.items.properties.language"
+      },
+      "message": "200 application/json: property \"items[].language\" added"
+    },
+    {
+      "id": "RESP_PROPERTY_REMOVED",
+      "severity": "breaking",
+      "operation": "GET /books",
+      "location": {
+        "base": "paths./books.get.responses.200.content.application/json.schema.properties.items.items.properties.subtitle",
+        "head": null
+      },
+      "message": "200 application/json: property \"items[].subtitle\" removed"
+    },
+    {
+      "id": "REQ_ENUM_WIDENED",
+      "severity": "safe",
+      "operation": "POST /books",
+      "location": {
+        "base": "paths./books.post.requestBody.content.application/json.schema.properties.format",
+        "head": "paths./books.post.requestBody.content.application/json.schema.properties.format"
+      },
+      "message": "request body application/json: enum of \"format\" widened: added \"audiobook\""
+    },
+    {
+      "id": "REQ_PROPERTY_REQUIRED_ADDED",
+      "severity": "breaking",
+      "operation": "POST /books",
+      "location": {
+        "base": null,
+        "head": "paths./books.post.requestBody.content.application/json.schema.properties.isbn13"
+      },
+      "message": "request body application/json: property \"isbn13\" added as required"
+    },
+    {
+      "id": "RESP_ENUM_WIDENED",
+      "severity": "warning",
+      "operation": "POST /books",
+      "location": {
+        "base": "paths./books.post.responses.201.content.application/json.schema.properties.format",
+        "head": "paths./books.post.responses.201.content.application/json.schema.properties.format"
+      },
+      "message": "201 application/json: enum of \"format\" widened: added \"audiobook\""
+    },
+    {
+      "id": "RESP_PROPERTY_ADDED",
+      "severity": "safe",
+      "operation": "POST /books",
+      "location": {
+        "base": null,
+        "head": "paths./books.post.responses.201.content.application/json.schema.properties.language"
+      },
+      "message": "201 application/json: property \"language\" added"
+    },
+    {
+      "id": "RESP_PROPERTY_REMOVED",
+      "severity": "breaking",
+      "operation": "POST /books",
+      "location": {
+        "base": "paths./books.post.responses.201.content.application/json.schema.properties.subtitle",
+        "head": null
+      },
+      "message": "201 application/json: property \"subtitle\" removed"
+    },
+    {
+      "id": "RESP_STATUS_ADDED",
+      "severity": "safe",
+      "operation": "POST /books",
+      "location": {
+        "base": null,
+        "head": "paths./books.post.responses.409"
+      },
+      "message": "response status 409 added"
+    },
+    {
+      "id": "PARAM_REMOVED",
+      "severity": "warning",
+      "operation": "GET /books/{bookId}",
+      "location": {
+        "base": "paths./books/{bookId}.get.parameters.query.include",
+        "head": null
+      },
+      "message": "query parameter \"include\" removed"
+    },
+    {
+      "id": "RESP_ENUM_WIDENED",
+      "severity": "warning",
+      "operation": "GET /books/{bookId}",
+      "location": {
+        "base": "paths./books/{bookId}.get.responses.200.content.application/json.schema.properties.format",
+        "head": "paths./books/{bookId}.get.responses.200.content.application/json.schema.properties.format"
+      },
+      "message": "200 application/json: enum of \"format\" widened: added \"audiobook\""
+    },
+    {
+      "id": "RESP_PROPERTY_ADDED",
+      "severity": "safe",
+      "operation": "GET /books/{bookId}",
+      "location": {
+        "base": null,
+        "head": "paths./books/{bookId}.get.responses.200.content.application/json.schema.properties.language"
+      },
+      "message": "200 application/json: property \"language\" added"
+    },
+    {
+      "id": "RESP_PROPERTY_REMOVED",
+      "severity": "breaking",
+      "operation": "GET /books/{bookId}",
+      "location": {
+        "base": "paths./books/{bookId}.get.responses.200.content.application/json.schema.properties.subtitle",
+        "head": null
+      },
+      "message": "200 application/json: property \"subtitle\" removed"
+    },
+    {
+      "id": "REQ_ENUM_WIDENED",
+      "severity": "safe",
+      "operation": "PUT /books/{bookId}",
+      "location": {
+        "base": "paths./books/{bookId}.put.requestBody.content.application/json.schema.properties.format",
+        "head": "paths./books/{bookId}.put.requestBody.content.application/json.schema.properties.format"
+      },
+      "message": "request body application/json: enum of \"format\" widened: added \"audiobook\""
+    },
+    {
+      "id": "REQ_PROPERTY_REQUIRED_ADDED",
+      "severity": "breaking",
+      "operation": "PUT /books/{bookId}",
+      "location": {
+        "base": null,
+        "head": "paths./books/{bookId}.put.requestBody.content.application/json.schema.properties.isbn13"
+      },
+      "message": "request body application/json: property \"isbn13\" added as required"
+    },
+    {
+      "id": "RESP_ENUM_WIDENED",
+      "severity": "warning",
+      "operation": "PUT /books/{bookId}",
+      "location": {
+        "base": "paths./books/{bookId}.put.responses.200.content.application/json.schema.properties.format",
+        "head": "paths./books/{bookId}.put.responses.200.content.application/json.schema.properties.format"
+      },
+      "message": "200 application/json: enum of \"format\" widened: added \"audiobook\""
+    },
+    {
+      "id": "RESP_PROPERTY_ADDED",
+      "severity": "safe",
+      "operation": "PUT /books/{bookId}",
+      "location": {
+        "base": null,
+        "head": "paths./books/{bookId}.put.responses.200.content.application/json.schema.properties.language"
+      },
+      "message": "200 application/json: property \"language\" added"
+    },
+    {
+      "id": "RESP_PROPERTY_REMOVED",
+      "severity": "breaking",
+      "operation": "PUT /books/{bookId}",
+      "location": {
+        "base": "paths./books/{bookId}.put.responses.200.content.application/json.schema.properties.subtitle",
+        "head": null
+      },
+      "message": "200 application/json: property \"subtitle\" removed"
+    },
+    {
+      "id": "REQ_ENUM_WIDENED",
+      "severity": "safe",
+      "operation": "PATCH /books/{bookId}",
+      "location": {
+        "base": "paths./books/{bookId}.patch.requestBody.content.application/json.schema.properties.format",
+        "head": "paths./books/{bookId}.patch.requestBody.content.application/json.schema.properties.format"
+      },
+      "message": "request body application/json: enum of \"format\" widened: added \"audiobook\""
+    },
+    {
+      "id": "REQ_BODY_BECAME_REQUIRED",
+      "severity": "breaking",
+      "operation": "PATCH /books/{bookId}",
+      "location": {
+        "base": "paths./books/{bookId}.patch.requestBody.required",
+        "head": "paths./books/{bookId}.patch.requestBody.required"
+      },
+      "message": "request body is now required"
+    },
+    {
+      "id": "RESP_ENUM_WIDENED",
+      "severity": "warning",
+      "operation": "PATCH /books/{bookId}",
+      "location": {
+        "base": "paths./books/{bookId}.patch.responses.200.content.application/json.schema.properties.format",
+        "head": "paths./books/{bookId}.patch.responses.200.content.application/json.schema.properties.format"
+      },
+      "message": "200 application/json: enum of \"format\" widened: added \"audiobook\""
+    },
+    {
+      "id": "RESP_PROPERTY_ADDED",
+      "severity": "safe",
+      "operation": "PATCH /books/{bookId}",
+      "location": {
+        "base": null,
+        "head": "paths./books/{bookId}.patch.responses.200.content.application/json.schema.properties.language"
+      },
+      "message": "200 application/json: property \"language\" added"
+    },
+    {
+      "id": "RESP_PROPERTY_REMOVED",
+      "severity": "breaking",
+      "operation": "PATCH /books/{bookId}",
+      "location": {
+        "base": "paths./books/{bookId}.patch.responses.200.content.application/json.schema.properties.subtitle",
+        "head": null
+      },
+      "message": "200 application/json: property \"subtitle\" removed"
+    },
+    {
+      "id": "PATH_ADDED",
+      "severity": "safe",
+      "operation": "/books/{bookId}/related",
+      "location": {
+        "base": null,
+        "head": "paths./books/{bookId}/related"
+      },
+      "message": "path /books/{bookId}/related added"
+    },
+    {
+      "id": "REQ_CONSTRAINT_TIGHTENED",
+      "severity": "breaking",
+      "operation": "POST /books/{bookId}/reviews",
+      "location": {
+        "base": "paths./books/{bookId}/reviews.post.requestBody.content.application/json.schema.properties.rating",
+        "head": "paths./books/{bookId}/reviews.post.requestBody.content.application/json.schema.properties.rating"
+      },
+      "message": "request body application/json: maximum of \"rating\" tightened from 10 to 5"
+    },
+    {
+      "id": "RESP_BECAME_NULLABLE",
+      "severity": "breaking",
+      "operation": "GET /customers",
+      "location": {
+        "base": "paths./customers.get.responses.200.content.application/json.schema.items.properties.email",
+        "head": "paths./customers.get.responses.200.content.application/json.schema.items.properties.email"
+      },
+      "message": "200 application/json: \"value[].email\" can now be null"
+    },
+    {
+      "id": "UNSUPPORTED_CONSTRUCT",
+      "severity": "info",
+      "operation": "GET /customers",
+      "location": {
+        "base": "paths./customers.get.responses.200.content.application/json.schema.items.properties.preferences.properties.contact.oneOf",
+        "head": "paths./customers.get.responses.200.content.application/json.schema.items.properties.preferences.properties.contact.oneOf"
+      },
+      "message": "200 application/json: \"oneOf\" differs between versions at \"value[].preferences.contact\" (not analyzed, review manually)"
+    },
+    {
+      "id": "UNSUPPORTED_CONSTRUCT",
+      "severity": "info",
+      "operation": "POST /customers",
+      "location": {
+        "base": "paths./customers.post.requestBody.content.application/json.schema.properties.preferences.properties.contact.oneOf",
+        "head": "paths./customers.post.requestBody.content.application/json.schema.properties.preferences.properties.contact.oneOf"
+      },
+      "message": "request body application/json: \"oneOf\" differs between versions at \"preferences.contact\" (not analyzed, review manually)"
+    },
+    {
+      "id": "RESP_BECAME_NULLABLE",
+      "severity": "breaking",
+      "operation": "POST /customers",
+      "location": {
+        "base": "paths./customers.post.responses.201.content.application/json.schema.properties.email",
+        "head": "paths./customers.post.responses.201.content.application/json.schema.properties.email"
+      },
+      "message": "201 application/json: \"email\" can now be null"
+    },
+    {
+      "id": "UNSUPPORTED_CONSTRUCT",
+      "severity": "info",
+      "operation": "POST /customers",
+      "location": {
+        "base": "paths./customers.post.responses.201.content.application/json.schema.properties.preferences.properties.contact.oneOf",
+        "head": "paths./customers.post.responses.201.content.application/json.schema.properties.preferences.properties.contact.oneOf"
+      },
+      "message": "201 application/json: \"oneOf\" differs between versions at \"preferences.contact\" (not analyzed, review manually)"
+    },
+    {
+      "id": "RESP_BECAME_NULLABLE",
+      "severity": "breaking",
+      "operation": "GET /customers/{customerId}",
+      "location": {
+        "base": "paths./customers/{customerId}.get.responses.200.content.application/json.schema.properties.email",
+        "head": "paths./customers/{customerId}.get.responses.200.content.application/json.schema.properties.email"
+      },
+      "message": "200 application/json: \"email\" can now be null"
+    },
+    {
+      "id": "UNSUPPORTED_CONSTRUCT",
+      "severity": "info",
+      "operation": "GET /customers/{customerId}",
+      "location": {
+        "base": "paths./customers/{customerId}.get.responses.200.content.application/json.schema.properties.preferences.properties.contact.oneOf",
+        "head": "paths./customers/{customerId}.get.responses.200.content.application/json.schema.properties.preferences.properties.contact.oneOf"
+      },
+      "message": "200 application/json: \"oneOf\" differs between versions at \"preferences.contact\" (not analyzed, review manually)"
+    },
+    {
+      "id": "RESP_STATUS_REMOVED",
+      "severity": "warning",
+      "operation": "GET /customers/{customerId}",
+      "location": {
+        "base": "paths./customers/{customerId}.get.responses.404",
+        "head": null
+      },
+      "message": "response status 404 removed"
+    },
+    {
+      "id": "UNSUPPORTED_CONSTRUCT",
+      "severity": "info",
+      "operation": "PUT /customers/{customerId}",
+      "location": {
+        "base": "paths./customers/{customerId}.put.requestBody.content.application/json.schema.properties.preferences.properties.contact.oneOf",
+        "head": "paths./customers/{customerId}.put.requestBody.content.application/json.schema.properties.preferences.properties.contact.oneOf"
+      },
+      "message": "request body application/json: \"oneOf\" differs between versions at \"preferences.contact\" (not analyzed, review manually)"
+    },
+    {
+      "id": "RESP_BECAME_NULLABLE",
+      "severity": "breaking",
+      "operation": "PUT /customers/{customerId}",
+      "location": {
+        "base": "paths./customers/{customerId}.put.responses.200.content.application/json.schema.properties.email",
+        "head": "paths./customers/{customerId}.put.responses.200.content.application/json.schema.properties.email"
+      },
+      "message": "200 application/json: \"email\" can now be null"
+    },
+    {
+      "id": "UNSUPPORTED_CONSTRUCT",
+      "severity": "info",
+      "operation": "PUT /customers/{customerId}",
+      "location": {
+        "base": "paths./customers/{customerId}.put.responses.200.content.application/json.schema.properties.preferences.properties.contact.oneOf",
+        "head": "paths./customers/{customerId}.put.responses.200.content.application/json.schema.properties.preferences.properties.contact.oneOf"
+      },
+      "message": "200 application/json: \"oneOf\" differs between versions at \"preferences.contact\" (not analyzed, review manually)"
+    },
+    {
+      "id": "OP_ADDED",
+      "severity": "safe",
+      "operation": "PATCH /customers/{customerId}",
+      "location": {
+        "base": null,
+        "head": "paths./customers/{customerId}.patch"
+      },
+      "message": "operation PATCH /customers/{customerId} added"
+    },
+    {
+      "id": "PARAM_BECAME_REQUIRED",
+      "severity": "breaking",
+      "operation": "GET /orders",
+      "location": {
+        "base": "paths./orders.get.parameters.query.status",
+        "head": "paths./orders.get.parameters.query.status"
+      },
+      "message": "query parameter \"status\" is now required"
+    },
+    {
+      "id": "REQ_ENUM_WIDENED",
+      "severity": "safe",
+      "operation": "GET /orders",
+      "location": {
+        "base": "paths./orders.get.parameters.query.status.schema",
+        "head": "paths./orders.get.parameters.query.status.schema"
+      },
+      "message": "query parameter \"status\": enum of value widened: added \"refunded\""
+    },
+    {
+      "id": "RESP_ENUM_WIDENED",
+      "severity": "warning",
+      "operation": "GET /orders",
+      "location": {
+        "base": "paths./orders.get.responses.200.content.application/json.schema.items.properties.status",
+        "head": "paths./orders.get.responses.200.content.application/json.schema.items.properties.status"
+      },
+      "message": "200 application/json: enum of \"value[].status\" widened: added \"refunded\""
+    },
+    {
+      "id": "TYPE_CHANGED",
+      "severity": "breaking",
+      "operation": "GET /orders",
+      "location": {
+        "base": "paths./orders.get.responses.200.content.application/json.schema.items.properties.total",
+        "head": "paths./orders.get.responses.200.content.application/json.schema.items.properties.total"
+      },
+      "message": "200 application/json: type of \"value[].total\" changed from integer to number"
+    },
+    {
+      "id": "REQ_ENUM_NARROWED",
+      "severity": "breaking",
+      "operation": "POST /orders",
+      "location": {
+        "base": "paths./orders.post.requestBody.content.application/json.schema.properties.paymentMethod",
+        "head": "paths./orders.post.requestBody.content.application/json.schema.properties.paymentMethod"
+      },
+      "message": "request body application/json: enum of \"paymentMethod\" narrowed: removed \"cheque\""
+    },
+    {
+      "id": "RESP_ENUM_WIDENED",
+      "severity": "warning",
+      "operation": "POST /orders",
+      "location": {
+        "base": "paths./orders.post.responses.201.content.application/json.schema.properties.status",
+        "head": "paths./orders.post.responses.201.content.application/json.schema.properties.status"
+      },
+      "message": "201 application/json: enum of \"status\" widened: added \"refunded\""
+    },
+    {
+      "id": "TYPE_CHANGED",
+      "severity": "breaking",
+      "operation": "POST /orders",
+      "location": {
+        "base": "paths./orders.post.responses.201.content.application/json.schema.properties.total",
+        "head": "paths./orders.post.responses.201.content.application/json.schema.properties.total"
+      },
+      "message": "201 application/json: type of \"total\" changed from integer to number"
+    },
+    {
+      "id": "PATH_PARAM_RENAMED",
+      "severity": "info",
+      "operation": "/orders/{id}/items",
+      "location": {
+        "base": "paths./orders/{orderId}/items",
+        "head": "paths./orders/{id}/items"
+      },
+      "message": "path template renamed from /orders/{orderId}/items to /orders/{id}/items (same shape, treated as the same path)"
+    },
+    {
+      "id": "RESP_ENUM_WIDENED",
+      "severity": "warning",
+      "operation": "GET /orders/{orderId}",
+      "location": {
+        "base": "paths./orders/{orderId}.get.responses.200.content.application/json.schema.properties.status",
+        "head": "paths./orders/{orderId}.get.responses.200.content.application/json.schema.properties.status"
+      },
+      "message": "200 application/json: enum of \"status\" widened: added \"refunded\""
+    },
+    {
+      "id": "TYPE_CHANGED",
+      "severity": "breaking",
+      "operation": "GET /orders/{orderId}",
+      "location": {
+        "base": "paths./orders/{orderId}.get.responses.200.content.application/json.schema.properties.total",
+        "head": "paths./orders/{orderId}.get.responses.200.content.application/json.schema.properties.total"
+      },
+      "message": "200 application/json: type of \"total\" changed from integer to number"
+    },
+    {
+      "id": "OP_DEPRECATED",
+      "severity": "warning",
+      "operation": "POST /orders/{orderId}/cancel",
+      "location": {
+        "base": "paths./orders/{orderId}/cancel.post.deprecated",
+        "head": "paths./orders/{orderId}/cancel.post.deprecated"
+      },
+      "message": "operation is now deprecated"
+    },
+    {
+      "id": "RESP_ENUM_WIDENED",
+      "severity": "warning",
+      "operation": "POST /orders/{orderId}/cancel",
+      "location": {
+        "base": "paths./orders/{orderId}/cancel.post.responses.200.content.application/json.schema.properties.status",
+        "head": "paths./orders/{orderId}/cancel.post.responses.200.content.application/json.schema.properties.status"
+      },
+      "message": "200 application/json: enum of \"status\" widened: added \"refunded\""
+    },
+    {
+      "id": "TYPE_CHANGED",
+      "severity": "breaking",
+      "operation": "POST /orders/{orderId}/cancel",
+      "location": {
+        "base": "paths./orders/{orderId}/cancel.post.responses.200.content.application/json.schema.properties.total",
+        "head": "paths./orders/{orderId}/cancel.post.responses.200.content.application/json.schema.properties.total"
+      },
+      "message": "200 application/json: type of \"total\" changed from integer to number"
+    },
+    {
+      "id": "PATH_REMOVED",
+      "severity": "breaking",
+      "operation": "/publishers/{publisherId}",
+      "location": {
+        "base": "paths./publishers/{publisherId}",
+        "head": null
+      },
+      "message": "path /publishers/{publisherId} removed"
+    },
+    {
+      "id": "RESP_ENUM_WIDENED",
+      "severity": "warning",
+      "operation": "GET /search",
+      "location": {
+        "base": "paths./search.get.responses.200.content.application/json.schema.items.properties.format",
+        "head": "paths./search.get.responses.200.content.application/json.schema.items.properties.format"
+      },
+      "message": "200 application/json: enum of \"value[].format\" widened: added \"audiobook\""
+    },
+    {
+      "id": "RESP_PROPERTY_ADDED",
+      "severity": "safe",
+      "operation": "GET /search",
+      "location": {
+        "base": null,
+        "head": "paths./search.get.responses.200.content.application/json.schema.items.properties.language"
+      },
+      "message": "200 application/json: property \"value[].language\" added"
+    },
+    {
+      "id": "RESP_PROPERTY_REMOVED",
+      "severity": "breaking",
+      "operation": "GET /search",
+      "location": {
+        "base": "paths./search.get.responses.200.content.application/json.schema.items.properties.subtitle",
+        "head": null
+      },
+      "message": "200 application/json: property \"value[].subtitle\" removed"
+    },
+    {
+      "id": "SECURITY_ADDED",
+      "severity": "breaking",
+      "operation": "GET /search",
+      "location": {
+        "base": "paths./search.get.security",
+        "head": "paths./search.get.security"
+      },
+      "message": "security requirement became stricter (was none, now bearerAuth)"
+    }
+  ],
+  "summary": {
+    "breaking": 24,
+    "warning": 16,
+    "safe": 15,
+    "info": 7,
+    "total": 62,
+    "hiddenSafe": 0
+  }
+}

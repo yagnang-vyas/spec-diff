@@ -1,0 +1,94 @@
+specdiff 0.1.0
+base: examples/bookstore/v1.yaml (Lantern Books API 1.0.0, OpenAPI 3.0.3)
+head: examples/bookstore/v2.yaml (Lantern Books API 2.0.0, OpenAPI 3.0.3)
+
+POST /authors
+  WARNING   REQ_CONSTRAINT_TIGHTENED     request body application/json: pattern of "slug" changed from "^[a-z0-9-]+$" to "^[a-z0-9_-]+$"
+
+PUT /authors/{authorId}
+  WARNING   REQ_CONSTRAINT_TIGHTENED     request body application/json: pattern of "slug" changed from "^[a-z0-9-]+$" to "^[a-z0-9_-]+$"
+
+DELETE /authors/{authorId}
+  BREAKING  OP_REMOVED                   operation DELETE /authors/{authorId} removed
+
+GET /authors/{authorId}/books
+  WARNING   RESP_ENUM_WIDENED            200 application/json: enum of "value[].format" widened: added "audiobook"
+  BREAKING  RESP_PROPERTY_REMOVED        200 application/json: property "value[].subtitle" removed
+
+GET /books
+  WARNING   RESP_ENUM_WIDENED            200 application/json: enum of "items[].format" widened: added "audiobook"
+  BREAKING  RESP_PROPERTY_REMOVED        200 application/json: property "items[].subtitle" removed
+
+POST /books
+  BREAKING  REQ_PROPERTY_REQUIRED_ADDED  request body application/json: property "isbn13" added as required
+  WARNING   RESP_ENUM_WIDENED            201 application/json: enum of "format" widened: added "audiobook"
+  BREAKING  RESP_PROPERTY_REMOVED        201 application/json: property "subtitle" removed
+
+GET /books/{bookId}
+  WARNING   PARAM_REMOVED                query parameter "include" removed
+  WARNING   RESP_ENUM_WIDENED            200 application/json: enum of "format" widened: added "audiobook"
+  BREAKING  RESP_PROPERTY_REMOVED        200 application/json: property "subtitle" removed
+
+PUT /books/{bookId}
+  BREAKING  REQ_PROPERTY_REQUIRED_ADDED  request body application/json: property "isbn13" added as required
+  WARNING   RESP_ENUM_WIDENED            200 application/json: enum of "format" widened: added "audiobook"
+  BREAKING  RESP_PROPERTY_REMOVED        200 application/json: property "subtitle" removed
+
+PATCH /books/{bookId}
+  BREAKING  REQ_BODY_BECAME_REQUIRED     request body is now required
+  WARNING   RESP_ENUM_WIDENED            200 application/json: enum of "format" widened: added "audiobook"
+  BREAKING  RESP_PROPERTY_REMOVED        200 application/json: property "subtitle" removed
+
+POST /books/{bookId}/reviews
+  BREAKING  REQ_CONSTRAINT_TIGHTENED     request body application/json: maximum of "rating" tightened from 10 to 5
+
+GET /customers
+  BREAKING  RESP_BECAME_NULLABLE         200 application/json: "value[].email" can now be null
+  INFO      UNSUPPORTED_CONSTRUCT        200 application/json: "oneOf" differs between versions at "value[].preferences.contact" (not analyzed, review manually)
+
+POST /customers
+  INFO      UNSUPPORTED_CONSTRUCT        request body application/json: "oneOf" differs between versions at "preferences.contact" (not analyzed, review manually)
+  BREAKING  RESP_BECAME_NULLABLE         201 application/json: "email" can now be null
+  INFO      UNSUPPORTED_CONSTRUCT        201 application/json: "oneOf" differs between versions at "preferences.contact" (not analyzed, review manually)
+
+GET /customers/{customerId}
+  BREAKING  RESP_BECAME_NULLABLE         200 application/json: "email" can now be null
+  INFO      UNSUPPORTED_CONSTRUCT        200 application/json: "oneOf" differs between versions at "preferences.contact" (not analyzed, review manually)
+  WARNING   RESP_STATUS_REMOVED          response status 404 removed
+
+PUT /customers/{customerId}
+  INFO      UNSUPPORTED_CONSTRUCT        request body application/json: "oneOf" differs between versions at "preferences.contact" (not analyzed, review manually)
+  BREAKING  RESP_BECAME_NULLABLE         200 application/json: "email" can now be null
+  INFO      UNSUPPORTED_CONSTRUCT        200 application/json: "oneOf" differs between versions at "preferences.contact" (not analyzed, review manually)
+
+GET /orders
+  BREAKING  PARAM_BECAME_REQUIRED        query parameter "status" is now required
+  WARNING   RESP_ENUM_WIDENED            200 application/json: enum of "value[].status" widened: added "refunded"
+  BREAKING  TYPE_CHANGED                 200 application/json: type of "value[].total" changed from integer to number
+
+POST /orders
+  BREAKING  REQ_ENUM_NARROWED            request body application/json: enum of "paymentMethod" narrowed: removed "cheque"
+  WARNING   RESP_ENUM_WIDENED            201 application/json: enum of "status" widened: added "refunded"
+  BREAKING  TYPE_CHANGED                 201 application/json: type of "total" changed from integer to number
+
+/orders/{id}/items
+  INFO      PATH_PARAM_RENAMED           path template renamed from /orders/{orderId}/items to /orders/{id}/items (same shape, treated as the same path)
+
+GET /orders/{orderId}
+  WARNING   RESP_ENUM_WIDENED            200 application/json: enum of "status" widened: added "refunded"
+  BREAKING  TYPE_CHANGED                 200 application/json: type of "total" changed from integer to number
+
+POST /orders/{orderId}/cancel
+  WARNING   OP_DEPRECATED                operation is now deprecated
+  WARNING   RESP_ENUM_WIDENED            200 application/json: enum of "status" widened: added "refunded"
+  BREAKING  TYPE_CHANGED                 200 application/json: type of "total" changed from integer to number
+
+/publishers/{publisherId}
+  BREAKING  PATH_REMOVED                 path /publishers/{publisherId} removed
+
+GET /search
+  WARNING   RESP_ENUM_WIDENED            200 application/json: enum of "value[].format" widened: added "audiobook"
+  BREAKING  RESP_PROPERTY_REMOVED        200 application/json: property "value[].subtitle" removed
+  BREAKING  SECURITY_ADDED               security requirement became stricter (was none, now bearerAuth)
+
+Summary: 24 breaking, 16 warning, 7 info (15 safe hidden, use --include-safe to list them)

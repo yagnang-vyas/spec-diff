@@ -1,0 +1,781 @@
+openapi: 3.0.3
+info:
+  title: Lantern Books API
+  version: 2.0.0
+  description: Original example API for a small online bookstore, used to demonstrate SpecDiff.
+servers:
+  - url: https://api.lanternbooks.example/v1
+security:
+  - bearerAuth: []
+tags:
+  - name: books
+  - name: authors
+  - name: publishers
+  - name: customers
+  - name: orders
+  - name: inventory
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      security: []
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status: {type: string, enum: [ok]}
+  /auth/token:
+    post:
+      operationId: createToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: {type: string, format: email}
+                password: {type: string, minLength: 8}
+      responses:
+        "200":
+          description: Token issued
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [accessToken, expiresIn]
+                properties:
+                  accessToken: {type: string}
+                  expiresIn: {type: integer}
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /search:
+    get:
+      operationId: search
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: {type: string, minLength: 2}
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Matching books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+  /books:
+    get:
+      operationId: listBooks
+      tags: [books]
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Cursor"
+        - name: genre
+          in: query
+          schema: {$ref: "#/components/schemas/Genre"}
+      responses:
+        "200":
+          description: A page of books
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookPage"
+    post:
+      operationId: createBook
+      tags: [books]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewBook"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          description: A book with this ISBN already exists
+  /books/{bookId}:
+    parameters:
+      - $ref: "#/components/parameters/BookId"
+    get:
+      operationId: getBook
+      tags: [books]
+      responses:
+        "200":
+          description: The book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      operationId: replaceBook
+      tags: [books]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewBook"
+      responses:
+        "200":
+          description: Replaced
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      operationId: updateBook
+      tags: [books]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: {type: string, maxLength: 200}
+                format: {$ref: "#/components/schemas/BookFormat"}
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+    delete:
+      operationId: deleteBook
+      tags: [books]
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /books/{bookId}/related:
+    parameters:
+      - $ref: "#/components/parameters/BookId"
+    get:
+      operationId: listRelatedBooks
+      tags: [books]
+      responses:
+        "200":
+          description: Books readers also bought
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+  /books/{bookId}/reviews:
+    parameters:
+      - $ref: "#/components/parameters/BookId"
+    get:
+      operationId: listReviews
+      tags: [books]
+      responses:
+        "200":
+          description: Reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Review"
+    post:
+      operationId: createReview
+      tags: [books]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rating]
+              properties:
+                rating: {type: integer, minimum: 1, maximum: 5}
+                comment: {type: string, maxLength: 2000}
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+  /reviews/{reviewId}:
+    delete:
+      operationId: deleteReview
+      tags: [books]
+      parameters:
+        - name: reviewId
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "204":
+          description: Deleted
+  /authors:
+    get:
+      operationId: listAuthors
+      tags: [authors]
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - name: sort
+          in: query
+          schema: {type: string, enum: [name, -name]}
+      responses:
+        "200":
+          description: Authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Author"
+    post:
+      operationId: createAuthor
+      tags: [authors]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAuthor"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Author"
+  /authors/{authorId}:
+    parameters:
+      - $ref: "#/components/parameters/AuthorId"
+    get:
+      operationId: getAuthor
+      tags: [authors]
+      responses:
+        "200":
+          description: The author
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Author"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      operationId: replaceAuthor
+      tags: [authors]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAuthor"
+      responses:
+        "200":
+          description: Replaced
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Author"
+  /authors/{authorId}/books:
+    parameters:
+      - $ref: "#/components/parameters/AuthorId"
+    get:
+      operationId: listAuthorBooks
+      tags: [authors]
+      responses:
+        "200":
+          description: Books by this author
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+  /publishers:
+    get:
+      operationId: listPublishers
+      tags: [publishers]
+      responses:
+        "200":
+          description: Publishers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Publisher"
+    post:
+      operationId: createPublisher
+      tags: [publishers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: {type: string, maxLength: 120}
+                country: {type: string, minLength: 2, maxLength: 2}
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Publisher"
+  /customers:
+    get:
+      operationId: listCustomers
+      tags: [customers]
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: Customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    post:
+      operationId: createCustomer
+      tags: [customers]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, name]
+              properties:
+                email: {type: string, format: email}
+                name: {type: string, maxLength: 100}
+                preferences:
+                  $ref: "#/components/schemas/Preferences"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+  /customers/{customerId}:
+    parameters:
+      - name: customerId
+        in: path
+        required: true
+        schema: {type: string}
+    get:
+      operationId: getCustomer
+      tags: [customers]
+      responses:
+        "200":
+          description: The customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+    patch:
+      operationId: updateCustomer
+      tags: [customers]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: {type: string, maxLength: 100}
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+    put:
+      operationId: replaceCustomer
+      tags: [customers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: {type: string, maxLength: 100}
+                preferences:
+                  $ref: "#/components/schemas/Preferences"
+      responses:
+        "200":
+          description: Replaced
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - name: status
+          in: query
+          required: true
+          schema: {$ref: "#/components/schemas/OrderStatus"}
+      responses:
+        "200":
+          description: Orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+    post:
+      operationId: createOrder
+      tags: [orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [customerId, items, paymentMethod]
+              properties:
+                customerId: {type: string}
+                paymentMethod: {type: string, enum: [card, paypal]}
+                items:
+                  type: array
+                  minItems: 1
+                  items:
+                    $ref: "#/components/schemas/NewOrderItem"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "422":
+          description: Order cannot be fulfilled
+  /orders/{orderId}:
+    parameters:
+      - $ref: "#/components/parameters/OrderId"
+    get:
+      operationId: getOrder
+      tags: [orders]
+      responses:
+        "200":
+          description: The order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /orders/{orderId}/cancel:
+    parameters:
+      - $ref: "#/components/parameters/OrderId"
+    post:
+      operationId: cancelOrder
+      deprecated: true
+      tags: [orders]
+      responses:
+        "200":
+          description: Cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "409":
+          description: Order already shipped
+  /orders/{id}/items:
+    get:
+      operationId: listOrderItems
+      tags: [orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: Line items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderItem"
+    post:
+      operationId: addOrderItem
+      tags: [orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewOrderItem"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderItem"
+  /inventory/{bookId}:
+    parameters:
+      - $ref: "#/components/parameters/BookId"
+    get:
+      operationId: getInventory
+      tags: [inventory]
+      responses:
+        "200":
+          description: Stock level
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Inventory"
+    put:
+      operationId: setInventory
+      tags: [inventory]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [onHand]
+              properties:
+                onHand: {type: integer, minimum: 0}
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Inventory"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    Limit:
+      name: limit
+      in: query
+      schema: {type: integer, minimum: 1, maximum: 100, default: 20}
+    Cursor:
+      name: cursor
+      in: query
+      schema: {type: string}
+    BookId:
+      name: bookId
+      in: path
+      required: true
+      schema: {type: string}
+    AuthorId:
+      name: authorId
+      in: path
+      required: true
+      schema: {type: string}
+    OrderId:
+      name: orderId
+      in: path
+      required: true
+      schema: {type: string}
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthorized:
+      description: Missing or invalid credentials
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+  schemas:
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: {type: string}
+        message: {type: string}
+    Genre:
+      type: string
+      enum: [fiction, nonfiction, poetry, science, history]
+    BookFormat:
+      type: string
+      enum: [hardcover, paperback, ebook, audiobook]
+    Book:
+      type: object
+      required: [id, title, authorIds, price, format]
+      properties:
+        id: {type: string}
+        title: {type: string, maxLength: 200}
+        language: {type: string}
+        authorIds:
+          type: array
+          items: {type: string}
+        publisherId: {type: string}
+        genre: {$ref: "#/components/schemas/Genre"}
+        format: {$ref: "#/components/schemas/BookFormat"}
+        price:
+          type: object
+          required: [amount, currency]
+          properties:
+            amount: {type: number}
+            currency: {type: string, enum: [USD, EUR, GBP]}
+        isbn: {type: string, pattern: "^[0-9]{10}$"}
+    NewBook:
+      type: object
+      required: [title, authorIds, price, format, isbn13]
+      properties:
+        title: {type: string, maxLength: 200}
+        subtitle: {type: string}
+        isbn13: {type: string, pattern: "^[0-9]{13}$"}
+        authorIds:
+          type: array
+          minItems: 1
+          items: {type: string}
+        publisherId: {type: string}
+        genre: {$ref: "#/components/schemas/Genre"}
+        format: {$ref: "#/components/schemas/BookFormat"}
+        price:
+          type: object
+          required: [amount, currency]
+          properties:
+            amount: {type: number, minimum: 0}
+            currency: {type: string, enum: [USD, EUR, GBP]}
+    BookPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Book"
+        nextCursor: {type: string}
+    Author:
+      type: object
+      required: [id, name, slug]
+      properties:
+        id: {type: string}
+        name: {type: string}
+        slug: {type: string}
+        bio: {type: string}
+    NewAuthor:
+      type: object
+      required: [name, slug]
+      properties:
+        name: {type: string, maxLength: 120}
+        slug: {type: string, pattern: "^[a-z0-9_-]+$"}
+        bio: {type: string, maxLength: 4000}
+    Publisher:
+      type: object
+      required: [id, name]
+      properties:
+        id: {type: string}
+        name: {type: string}
+        country: {type: string}
+    Preferences:
+      type: object
+      properties:
+        newsletter: {type: boolean}
+        contact:
+          oneOf:
+            - {type: string, enum: [email]}
+            - {type: string, enum: [sms]}
+            - {type: string, enum: [push]}
+    Customer:
+      type: object
+      required: [id, email, name]
+      properties:
+        id: {type: string}
+        email: {type: string, format: email, nullable: true}
+        name: {type: string}
+        preferences:
+          $ref: "#/components/schemas/Preferences"
+    OrderStatus:
+      type: string
+      enum: [pending, paid, shipped, cancelled, refunded]
+    NewOrderItem:
+      type: object
+      required: [bookId, quantity]
+      properties:
+        bookId: {type: string}
+        quantity: {type: integer, minimum: 1, maximum: 50}
+    OrderItem:
+      type: object
+      required: [bookId, quantity, unitPrice]
+      properties:
+        bookId: {type: string}
+        quantity: {type: integer}
+        unitPrice: {type: number}
+    Order:
+      type: object
+      required: [id, customerId, status, items, total]
+      properties:
+        id: {type: string}
+        customerId: {type: string}
+        status: {$ref: "#/components/schemas/OrderStatus"}
+        total: {type: number, description: "Order total"}
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+    Review:
+      type: object
+      required: [id, rating]
+      properties:
+        id: {type: string}
+        rating: {type: integer}
+        comment: {type: string}
+    Inventory:
+      type: object
+      required: [bookId, onHand]
+      properties:
+        bookId: {type: string}
+        onHand: {type: integer}
+        reserved: {type: integer}
