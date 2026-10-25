@@ -55,7 +55,7 @@ the GitHub repository and accept those settings; no environment variables or bac
 site is plain multi-page static HTML (`/` and `/playground/`), so there are no client-side routes to
 rewrite. Asset URLs are relative, so it also works from a sub-path.
 
-Once a deployment exists, add its URL to the README at the marked comment near the top.
+The live site is at <https://specdiff.netlify.app/>, linked from the root README.
 
 ## Layout
 
