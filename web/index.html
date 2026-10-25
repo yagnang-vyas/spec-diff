@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SpecDiff: breaking-change detection for OpenAPI</title>
+    <meta
+      name="description"
+      content="SpecDiff compares two OpenAPI 3.x documents and classifies every change as breaking, warning, safe or info. Try it in the browser Playground."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="./">Spec<span>Diff</span></a>
+        <nav class="nav" aria-label="Primary">
+          <a href="#how-it-works">How it works</a>
+          <a href="#features">Features</a>
+          <a href="#get-started">Get started</a>
+          <a href="./playground/">Playground</a>
+          <a href="https://github.com/yagnang-vyas/spec-diff">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero">
+        <div class="wrap">
+          <h1>Catch breaking OpenAPI changes before your clients do.</h1>
+          <p class="lead">
+            SpecDiff compares two OpenAPI 3.x documents and classifies every contract change as
+            <strong>breaking</strong>, <strong>warning</strong>, <strong>safe</strong> or
+            <strong>info</strong>, so API changes can be gated in pull requests instead of being
+            discovered by clients after a deploy.
+          </p>
+          <div class="cta">
+            <a class="btn primary large" href="./playground/">Open Playground</a>
+            <a class="btn large" href="https://github.com/yagnang-vyas/spec-diff">View on GitHub</a>
+          </div>
+          <p class="privacy">
+            The Playground runs the comparison in your browser. Your documents are not uploaded.
+          </p>
+        </div>
+      </section>
+
+      <section class="block" id="problem">
+        <div class="wrap">
+          <h2>The problem</h2>
+          <p class="sub">
+            A pull request that removes a response field, makes a query parameter required or narrows
+            an enum is hard to spot in a large YAML diff. SpecDiff reads both documents, resolves
+            every <code>$ref</code> (including recursive schemas and relative files in the CLI), and
+            tells you which changes can break existing clients, with the rule that fired and where in
+            each document it happened.
+          </p>
+        </div>
+      </section>
+
+      <section class="block" id="how-it-works">
+        <div class="wrap">
+          <h2>Direction-aware by design</h2>
+          <p class="sub">
+            A schema describes data flowing in one direction, and what counts as compatible differs
+            in each. The same edit can be safe in a request and breaking in a response.
+          </p>
+          <div class="two-col">
+            <table class="plain">
+              <caption class="sr-only">Compatibility depends on direction</caption>
+              <thead>
+                <tr><th scope="col">Edit</th><th scope="col">In a request</th><th scope="col">In a response</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">integer widened to number</th><td class="sev-safe">fine</td><td class="sev-breaking">breaking</td></tr>
+                <tr><th scope="row">new required field</th><td class="sev-breaking">breaking</td><td>not a break</td></tr>
+                <tr><th scope="row">field removed</th><td>not a break</td><td class="sev-breaking">breaking</td></tr>
+              </tbody>
+            </table>
+            <p class="note">
+              <strong>Why:</strong> the server <em>consumes</em> requests, so a request change breaks
+              clients when the server accepts <em>less</em> than before. The server
+              <em>produces</em> responses, so a response change breaks clients when the server may
+              send more than they were promised or less than they relied on. The rules and their
+              rationale are in
+              <a href="https://github.com/yagnang-vyas/spec-diff/blob/main/SPEC.md">SPEC.md</a>.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="block" id="features">
+        <div class="wrap">
+          <h2>What it does</h2>
+          <p class="sub">Everything listed here is described in the project README and covered by its tests.</p>
+          <div class="grid">
+            <div class="card"><h3>Four severities</h3><p><code>breaking</code>, <code>warning</code>, <code>safe</code> and <code>info</code>, each change tagged with a rule ID from a documented rule table.</p></div>
+            <div class="card"><h3>OpenAPI 3.0.x and 3.1.x</h3><p>Compared against each other. <code>nullable: true</code> and <code>type: [T, "null"]</code> are treated as the same thing.</p></div>
+            <div class="card"><h3>Recursive references</h3><p>Resolves every <code>$ref</code>, including recursive schemas, and compares shared schemas once.</p></div>
+            <div class="card"><h3>Text, JSON, Markdown</h3><p>Reports with deterministic ordering: no timestamps, sorted by path, method and rule.</p></div>
+            <div class="card"><h3>Built for CI</h3><p>Exit codes you can gate on, configurable with <code>--fail-on</code>, plus <code>--ignore</code> and <code>--include-safe</code>.</p></div>
+            <div class="card"><h3>Honest about limits</h3><p>Constructs it does not analyze, such as <code>oneOf</code> and <code>anyOf</code>, are reported as <code>info</code> instead of ignored.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="block" id="example">
+        <div class="wrap">
+          <h2>A realistic run</h2>
+          <p class="sub">
+            Two versions of a small Orders API, compared from the command line. This is the CLI's
+            real output for the example that is preloaded in the
+            <a href="./playground/">Playground</a>; the exit code is <code>1</code> because breaking
+            changes exist.
+          </p>
+          <pre class="code"><code>$ specdiff orders-v1.yaml orders-v2.yaml
+specdiff 0.1.0
+base: orders-v1.yaml (Orders API 1.0.0, OpenAPI 3.0.3)
+head: orders-v2.yaml (Orders API 2.0.0, OpenAPI 3.0.3)
+
+GET /orders
+  <span class="sev-breaking">BREAKING</span>  PARAM_BECAME_REQUIRED        query parameter &quot;status&quot; is now required
+  <span class="sev-breaking">BREAKING</span>  RESP_PROPERTY_REMOVED        200 application/json: property &quot;value[].note&quot; removed
+  <span class="sev-breaking">BREAKING</span>  TYPE_CHANGED                 200 application/json: type of &quot;value[].total&quot; changed from integer to number
+
+POST /orders
+  <span class="sev-breaking">BREAKING</span>  REQ_PROPERTY_REQUIRED_ADDED  request body application/json: property &quot;currency&quot; added as required
+  <span class="sev-breaking">BREAKING</span>  REQ_CONSTRAINT_TIGHTENED     request body application/json: maximum of &quot;quantity&quot; tightened from 100 to 50
+  <span class="sev-breaking">BREAKING</span>  RESP_PROPERTY_REMOVED        201 application/json: property &quot;note&quot; removed
+  <span class="sev-breaking">BREAKING</span>  TYPE_CHANGED                 201 application/json: type of &quot;total&quot; changed from integer to number
+
+GET /orders/{orderId}
+  <span class="sev-breaking">BREAKING</span>  RESP_PROPERTY_REMOVED        200 application/json: property &quot;note&quot; removed
+  <span class="sev-breaking">BREAKING</span>  TYPE_CHANGED                 200 application/json: type of &quot;total&quot; changed from integer to number
+  <span class="sev-warning">WARNING</span>   RESP_STATUS_REMOVED          response status 404 removed
+
+DELETE /orders/{orderId}
+  <span class="sev-breaking">BREAKING</span>  OP_REMOVED                   operation DELETE /orders/{orderId} removed
+
+Summary: 10 breaking, 1 warning, 0 info (2 safe hidden, use --include-safe to list them)
+</code></pre>
+          <p style="margin-top:16px"><a class="btn primary" href="./playground/">Try this comparison in the Playground</a></p>
+        </div>
+      </section>
+
+      <section class="block" id="get-started">
+        <div class="wrap">
+          <h2>Get started</h2>
+          <p class="sub">
+            SpecDiff is not published to npm yet. Install it from a clone (Node.js 22.19 or newer):
+          </p>
+          <div class="two-col">
+            <pre class="code"><code>git clone https://github.com/yagnang-vyas/spec-diff.git
+cd spec-diff
+npm ci
+npm run build
+node dist/cli.js --help   # or: npm link</code></pre>
+            <pre class="code"><code>specdiff &lt;base&gt; &lt;head&gt; \
+  [--format text|json|markdown] \
+  [--fail-on breaking|warning|never] \
+  [--include-safe] [--ignore RULE_ID,...]</code></pre>
+          </div>
+          <p class="sub" style="margin-top:16px">
+            Exit <code>0</code> means nothing at or above the <code>--fail-on</code> threshold,
+            <code>1</code> means changes at or above it, and <code>2</code> means a usage or input
+            error. A GitHub Actions recipe is in the
+            <a href="https://github.com/yagnang-vyas/spec-diff#ci-recipe-github-actions">README</a>.
+          </p>
+        </div>
+      </section>
+
+      <section class="block" id="cli-and-playground">
+        <div class="wrap">
+          <h2>CLI and Playground</h2>
+          <p class="sub">
+            The CLI is the product and the thing to put in CI. The Playground is a way to try it
+            without installing anything.
+          </p>
+          <div class="two-col">
+            <div class="card">
+              <h3>Same engine</h3>
+              <p>
+                The Playground imports the CLI's normalization and diff modules and its report
+                renderers unchanged and runs them in your browser. Only the loading step differs: the
+                CLI reads files, the Playground parses editor text. A test suite compares the two on
+                the project's own fixtures.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Differences</h3>
+              <p>
+                Playground documents are limited to 1 MB each, and <code>$ref</code>s must point
+                inside the same document: relative file references work in the CLI only. Nothing is
+                uploaded, saved or placed in the URL.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <ul>
+          <li><a href="https://github.com/yagnang-vyas/spec-diff">Repository</a></li>
+          <li><a href="https://github.com/yagnang-vyas/spec-diff#readme">README</a></li>
+          <li><a href="https://github.com/yagnang-vyas/spec-diff/blob/main/SPEC.md">Specification</a></li>
+          <li><a href="https://github.com/yagnang-vyas/spec-diff/issues">Issues</a></li>
+          <li><a href="https://github.com/yagnang-vyas/spec-diff#development">Contributing</a></li>
+          <li><a href="https://github.com/yagnang-vyas/spec-diff/blob/main/LICENSE">MIT License</a></li>
+        </ul>
+        <p>SpecDiff is open source software by Yagnang Vyas.</p>
+      </div>
+    </footer>
+  </body>
+</html>
