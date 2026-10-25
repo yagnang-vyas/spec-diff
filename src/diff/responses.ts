@@ -1,4 +1,4 @@
-import type { NormalizedOperation } from "../model.js";
+import type { NormalizedOperation, NormalizedResponse } from "../model.js";
 import type { Emit, Loc } from "./context.js";
 import { diffSchema } from "./schema.js";
 
@@ -22,45 +22,35 @@ export function diffResponses(
           severity: status.startsWith("2") ? "breaking" : "warning",
         },
       );
-      continue;
-    }
-    if (!b && h) {
+    } else if (!b && h) {
       emit("RESP_STATUS_ADDED", loc.added("responses", h.key), { status: h.key });
+    } else if (b && h) {
+      diffResponseContent(b, h, loc.descend(["responses", b.key], ["responses", h.key]), emit);
+    }
+  }
+}
+
+function diffResponseContent(
+  base: NormalizedResponse,
+  head: NormalizedResponse,
+  loc: Loc,
+  emit: Emit,
+): void {
+  const content = loc.child("content");
+  for (const [mediaType, entry] of base.content) {
+    if (!head.content.has(mediaType)) {
+      const params = { mediaType: entry.key };
+      emit("RESP_MEDIA_TYPE_REMOVED", content.removed(entry.key), params, { scope: head.key });
+    }
+  }
+  for (const [mediaType, entry] of head.content) {
+    const before = base.content.get(mediaType);
+    if (!before) {
+      const params = { mediaType: entry.key };
+      emit("RESP_MEDIA_TYPE_ADDED", content.added(entry.key), params, { scope: head.key });
       continue;
     }
-    if (!b || !h) continue;
-
-    const here = loc.descend(["responses", b.key], ["responses", h.key]);
-    const content = here.child("content");
-    for (const [mediaType, entry] of b.content) {
-      if (!h.content.has(mediaType)) {
-        emit(
-          "RESP_MEDIA_TYPE_REMOVED",
-          content.removed(entry.key),
-          { mediaType: entry.key },
-          { scope: h.key },
-        );
-      }
-    }
-    for (const [mediaType, entry] of h.content) {
-      const before = b.content.get(mediaType);
-      if (!before) {
-        emit(
-          "RESP_MEDIA_TYPE_ADDED",
-          content.added(entry.key),
-          { mediaType: entry.key },
-          { scope: h.key },
-        );
-        continue;
-      }
-      diffSchema(
-        before.schema,
-        entry.schema,
-        content.descend([before.key, "schema"], [entry.key, "schema"]),
-        emit,
-        "response",
-        `${h.key} ${entry.key}`,
-      );
-    }
+    const here = content.descend([before.key, "schema"], [entry.key, "schema"]);
+    diffSchema(before.schema, entry.schema, here, emit, "response", `${head.key} ${entry.key}`);
   }
 }

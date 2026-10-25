@@ -152,6 +152,10 @@ Ambiguities are resolved conservatively and recorded here.
     already being compared further up the stack counts as equal for that branch. A depth guard of
     100 levels reports `UNSUPPORTED_CONSTRUCT` instead of looping when composition defeats object
     identity.
+    A pair that compared clean is remembered, so a shared sub-schema is compared once per
+    media type rather than once per path to it (diamond-shaped schemas would otherwise take
+    exponential time). A shared sub-schema that did change is reported at every location that
+    uses it.
 13. **Enums** compare as sets of canonical JSON values; `const` is treated as a one-value enum.
 14. **Numeric bounds** are normalized so that the 3.0 boolean form (`exclusiveMinimum: true`) and the
     3.1 numeric form compare equal; an equal bound that became exclusive counts as tightened.
@@ -185,3 +189,33 @@ Ambiguities are resolved conservatively and recorded here.
 - Regex and `format` containment is not analyzed; changes are warnings.
 - Response `additionalProperties` changes between `false` and "allowed" are not reported.
 - `allOf` flattening is shallow (see Decisions 11).
+
+## Output
+
+All three formats list the same changes in the same order: operation path, then HTTP method,
+then location, then rule ID, then message. Safe changes are counted in the summary but only listed
+with `--include-safe`; ignored rules are removed before counting.
+
+JSON (`schemaVersion: 1`):
+
+```json
+{
+  "schemaVersion": 1,
+  "tool": { "name": "specdiff", "version": "0.1.0" },
+  "base": { "file": "...", "openapi": "3.0.3", "title": "...", "version": "..." },
+  "head": { "file": "...", "openapi": "3.1.0", "title": "...", "version": "..." },
+  "changes": [
+    {
+      "id": "RESP_PROPERTY_REMOVED",
+      "severity": "breaking",
+      "operation": "GET /users/{id}",
+      "location": { "base": "paths./users/{id}.get...email", "head": null },
+      "message": "200 application/json: property \"email\" removed"
+    }
+  ],
+  "summary": { "breaking": 1, "warning": 0, "safe": 0, "info": 0, "total": 1, "hiddenSafe": 0 }
+}
+```
+
+Unexpected internal errors exit with `2` and a message on stderr; they are never mistaken for
+"changes found" (`1`).

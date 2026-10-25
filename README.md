@@ -55,7 +55,7 @@ the exit code.
 | `1`   | Changes at or above the threshold                                                                                                                           |
 | `2`   | Usage or input error: bad flags, unreadable file, invalid or unsupported spec (the message is prefixed with the file name), or an unexpected internal error |
 | `130` | Interrupted (SIGINT)                                                                                                                                        |
-| `141` | Output pipe closed early (for example `                                                                                                                     | head -1`); exits quietly |
+| `141` | Output pipe closed early (for example when piping into `head -1`); exits quietly                                                                            |
 
 ## Sample output
 

@@ -7,6 +7,24 @@ function where(param: NormalizedParameter): string[] {
   return ["parameters", param.in, param.name];
 }
 
+/** Pair up removed and added parameters that share a name but not a location. */
+function extractMoves(
+  removed: NormalizedParameter[],
+  added: NormalizedParameter[],
+): [NormalizedParameter, NormalizedParameter][] {
+  const moves: [NormalizedParameter, NormalizedParameter][] = [];
+  for (const gone of [...removed]) {
+    const moved = added.find(
+      (p) => p.name.toLowerCase() === gone.name.toLowerCase() && p.in !== gone.in,
+    );
+    if (!moved) continue;
+    removed.splice(removed.indexOf(gone), 1);
+    added.splice(added.indexOf(moved), 1);
+    moves.push([gone, moved]);
+  }
+  return moves;
+}
+
 export function diffParameters(
   base: NormalizedOperation,
   head: NormalizedOperation,
@@ -17,52 +35,44 @@ export function diffParameters(
   const added = [...head.parameters.values()].filter((p) => !base.parameters.has(p.key));
 
   // The same name under a different `in` is a move, not a removal plus an addition.
-  for (const gone of [...removed]) {
-    const moved = added.find(
-      (p) => p.name.toLowerCase() === gone.name.toLowerCase() && p.in !== gone.in,
-    );
-    if (!moved) continue;
-    removed.splice(removed.indexOf(gone), 1);
-    added.splice(added.indexOf(moved), 1);
-    emit("PARAM_LOCATION_CHANGED", loc.descend(where(gone), where(moved)), {
-      name: gone.name,
-      from: gone.in,
-      to: moved.in,
-    });
+  for (const [from, to] of extractMoves(removed, added)) {
+    const params = { name: from.name, from: from.in, to: to.in };
+    emit("PARAM_LOCATION_CHANGED", loc.descend(where(from), where(to)), params);
   }
-
   for (const param of removed) {
     emit("PARAM_REMOVED", loc.removed(...where(param)), { in: param.in, name: param.name });
   }
   for (const param of added) {
-    emit(
-      param.required ? "PARAM_ADDED_REQUIRED" : "PARAM_ADDED_OPTIONAL",
-      loc.added(...where(param)),
-      { in: param.in, name: param.name },
-    );
+    const id = param.required ? "PARAM_ADDED_REQUIRED" : "PARAM_ADDED_OPTIONAL";
+    emit(id, loc.added(...where(param)), { in: param.in, name: param.name });
   }
 
   for (const [key, b] of base.parameters) {
     const h = head.parameters.get(key);
-    if (!h) continue;
-    const here = loc.descend(where(b), where(h));
-    const names = { in: h.in, name: h.name };
-    if (!b.required && h.required) emit("PARAM_BECAME_REQUIRED", here, names);
-    if (b.required && !h.required) emit("PARAM_BECAME_OPTIONAL", here, names);
-    if (b.serialization !== h.serialization) {
-      emit("PARAM_SERIALIZATION_CHANGED", here, {
-        ...names,
-        from: b.serialization,
-        to: h.serialization,
-      });
-    }
-    diffSchema(
-      b.schema,
-      h.schema,
-      loc.descend([...where(b), ...b.schemaPath], [...where(h), ...h.schemaPath]),
-      emit,
-      "request",
-      `${h.in} parameter "${h.name}"`,
-    );
+    if (h) diffSharedParameter(b, h, loc, emit);
   }
+}
+
+function diffSharedParameter(
+  base: NormalizedParameter,
+  head: NormalizedParameter,
+  loc: Loc,
+  emit: Emit,
+): void {
+  const here = loc.descend(where(base), where(head));
+  const names = { in: head.in, name: head.name };
+  if (!base.required && head.required) emit("PARAM_BECAME_REQUIRED", here, names);
+  if (base.required && !head.required) emit("PARAM_BECAME_OPTIONAL", here, names);
+  if (base.serialization !== head.serialization) {
+    const params = { ...names, from: base.serialization, to: head.serialization };
+    emit("PARAM_SERIALIZATION_CHANGED", here, params);
+  }
+  diffSchema(
+    base.schema,
+    head.schema,
+    loc.descend([...where(base), ...base.schemaPath], [...where(head), ...head.schemaPath]),
+    emit,
+    "request",
+    `${head.in} parameter "${head.name}"`,
+  );
 }

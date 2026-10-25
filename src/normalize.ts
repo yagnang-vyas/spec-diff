@@ -346,11 +346,15 @@ export function describeSchema(schema: Schema): SchemaView {
   return view;
 }
 
-function buildView(schema: Schema): SchemaView {
-  const members: Schema[] = [];
-  collectMembers(schema, new Set(), members);
+/** Accumulates `additionalProperties` across `allOf` members; `false` wins, then schemas. */
+interface AdditionalState {
+  forbidden: boolean;
+  allowed: boolean;
+  schemas: Schema[];
+}
 
-  const view: SchemaView = {
+function emptyView(): SchemaView {
+  return {
     anyType: true,
     types: new Set(),
     nullable: false,
@@ -366,78 +370,101 @@ function buildView(schema: Schema): SchemaView {
     writeOnly: false,
     unsupported: new Map(),
   };
+}
+
+/** Apply a member's `type` / `nullable`. Returns true when the member declares a type. */
+function mergeType(view: SchemaView, member: Schema): boolean {
   let typed = false;
-  let additionalFalse = false;
-  let additionalTrue = false;
-  const additionalSchemas: Schema[] = [];
+  if (member.type !== undefined) {
+    const declared = typeList(member.type);
+    typed = true;
+    view.types = new Set(declared.filter((t) => t !== "null"));
+    view.nullable = declared.includes("null");
+  }
+  if (member.nullable === true) view.nullable = true;
+  if (member.readOnly === true) view.readOnly = true;
+  if (member.writeOnly === true) view.writeOnly = true;
+  return typed;
+}
 
-  for (const member of members) {
-    if (member.type !== undefined) {
-      const declared = typeList(member.type);
-      typed = true;
-      view.types = new Set(declared.filter((t) => t !== "null"));
-      view.nullable = declared.includes("null");
-    }
-    if (member.nullable === true) view.nullable = true;
-    if (member.readOnly === true) view.readOnly = true;
-    if (member.writeOnly === true) view.writeOnly = true;
-
-    if (isObject(member.properties)) {
-      for (const [name, prop] of Object.entries(member.properties)) {
-        const resolved = asSchema(prop);
-        if (!resolved) continue;
-        const list = view.properties.get(name) ?? [];
-        list.push(resolved);
-        view.properties.set(name, list);
-      }
-    }
-    for (const name of asArray(member.required)) view.required.add(String(name));
-    const items = asSchema(member.items);
-    if (items) view.items.push(items);
-
-    if (member.additionalProperties === false) additionalFalse = true;
-    else if (member.additionalProperties === true) additionalTrue = true;
-    else if (isObject(member.additionalProperties))
-      additionalSchemas.push(member.additionalProperties);
-
-    const values = Array.isArray(member.enum)
-      ? member.enum
-      : "const" in member
-        ? [member.const]
-        : undefined;
-    if (values) {
-      const next = new Map(values.map((v) => [canonicalJson(v), v] as const));
-      view.enumValues = view.enumValues
-        ? new Map([...view.enumValues].filter(([k]) => next.has(k)))
-        : next;
-    }
-
-    for (const key of SCALAR_CONSTRAINTS) {
-      if (member[key] !== undefined) view.constraints.set(key, member[key]);
-    }
-    view.upper = boundOf(member, "maximum", "exclusiveMaximum") ?? view.upper;
-    view.lower = boundOf(member, "minimum", "exclusiveMinimum") ?? view.lower;
-
-    for (const key of UNSUPPORTED_KEYWORDS) {
-      if (member[key] !== undefined) {
-        view.unsupported.set(key, [...(view.unsupported.get(key) ?? []), member[key]]);
-      }
+function mergeStructure(view: SchemaView, member: Schema, additional: AdditionalState): void {
+  if (isObject(member.properties)) {
+    for (const [name, prop] of Object.entries(member.properties)) {
+      const resolved = asSchema(prop);
+      if (!resolved) continue;
+      const list = view.properties.get(name) ?? [];
+      list.push(resolved);
+      view.properties.set(name, list);
     }
   }
+  for (const name of asArray(member.required)) view.required.add(String(name));
+  const items = asSchema(member.items);
+  if (items) view.items.push(items);
 
-  if (additionalFalse) view.additionalProperties = false;
-  else if (additionalSchemas.length > 0) view.additionalProperties = additionalSchemas;
-  else if (additionalTrue) view.additionalProperties = true;
+  if (member.additionalProperties === false) additional.forbidden = true;
+  else if (member.additionalProperties === true) additional.allowed = true;
+  else if (isObject(member.additionalProperties))
+    additional.schemas.push(member.additionalProperties);
+}
 
-  if (typed) {
-    view.anyType = false;
-  } else if (view.properties.size > 0 || view.additionalProperties !== undefined) {
+/** Multiple `enum`s (from `allOf`) intersect; `const` is a one-value enum. */
+function mergeEnum(view: SchemaView, member: Schema): void {
+  const values = Array.isArray(member.enum)
+    ? member.enum
+    : "const" in member
+      ? [member.const]
+      : undefined;
+  if (!values) return;
+  const next = new Map(values.map((v) => [canonicalJson(v), v] as const));
+  view.enumValues = view.enumValues
+    ? new Map([...view.enumValues].filter(([k]) => next.has(k)))
+    : next;
+}
+
+function mergeConstraints(view: SchemaView, member: Schema): void {
+  for (const key of SCALAR_CONSTRAINTS) {
+    if (member[key] !== undefined) view.constraints.set(key, member[key]);
+  }
+  view.upper = boundOf(member, "maximum", "exclusiveMaximum") ?? view.upper;
+  view.lower = boundOf(member, "minimum", "exclusiveMinimum") ?? view.lower;
+  for (const key of UNSUPPORTED_KEYWORDS) {
+    if (member[key] !== undefined) {
+      view.unsupported.set(key, [...(view.unsupported.get(key) ?? []), member[key]]);
+    }
+  }
+}
+
+/** Without a `type`, infer object/array from the keywords present; otherwise accept anything. */
+function inferType(view: SchemaView): void {
+  if (view.properties.size > 0 || view.additionalProperties !== undefined) {
     view.anyType = false;
     view.types = new Set(["object"]);
   } else if (view.items.length > 0) {
     view.anyType = false;
     view.types = new Set(["array"]);
   }
+}
+
+function buildView(schema: Schema): SchemaView {
+  const members: Schema[] = [];
+  collectMembers(schema, new Set(), members);
+
+  const view = emptyView();
+  const additional: AdditionalState = { forbidden: false, allowed: false, schemas: [] };
+  let typed = false;
+  for (const member of members) {
+    typed = mergeType(view, member) || typed;
+    mergeStructure(view, member, additional);
+    mergeEnum(view, member);
+    mergeConstraints(view, member);
+  }
+
+  if (additional.forbidden) view.additionalProperties = false;
+  else if (additional.schemas.length > 0) view.additionalProperties = additional.schemas;
+  else if (additional.allowed) view.additionalProperties = true;
+
+  if (typed) view.anyType = false;
+  else inferType(view);
   return view;
 }
 

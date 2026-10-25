@@ -339,3 +339,60 @@ describe("operation-level details", () => {
     expect(diffDocs(base, responseDoc(str))).toEqual([]);
   });
 });
+
+describe("shared and cyclic structures", () => {
+  it("compares an unchanged diamond-shaped schema once, not once per path", () => {
+    const build = (leaf: unknown): unknown => {
+      let level: unknown = leaf;
+      for (let i = 0; i < 40; i += 1) {
+        level = { type: "object", properties: { a: level, b: level } };
+      }
+      return level;
+    };
+    const started = Date.now();
+    expect(diffDocs(responseDoc(build(str)), responseDoc(build(str)))).toEqual([]);
+    expect(Date.now() - started).toBeLessThan(5000);
+  });
+
+  it("reports a change in a shared schema at every location that uses it", () => {
+    const shared = (max: number) => ({ type: "string", maxLength: max });
+    const doc = (max: number) =>
+      responseDoc({ type: "object", properties: { a: shared(max), b: shared(max) } });
+    const changes = diffDocs(doc(3), doc(9));
+    expect(changes.map((c) => c.location.head?.split(".").pop())).toEqual(["a", "b"]);
+  });
+
+  it("terminates on self-referencing allOf and oneOf", () => {
+    const make = (maxLength: number) => {
+      const node: Record<string, unknown> = {
+        type: "object",
+        properties: { v: { type: "string", maxLength } },
+      };
+      node.allOf = [node];
+      node.oneOf = [node, str];
+      (node.properties as Record<string, unknown>).next = node;
+      return node;
+    };
+    const changes = diffDocs(responseDoc(make(5)), responseDoc(make(8)));
+    // the nested oneOf contains the changed node, so it differs too
+    expect(summarize(changes).sort()).toEqual([
+      "breaking RESP_CONSTRAINT_LOOSENED",
+      "info UNSUPPORTED_CONSTRUCT",
+    ]);
+  });
+
+  it("terminates when the recursion shapes differ between versions", () => {
+    const base: Record<string, unknown> = { type: "object", properties: {} };
+    (base.properties as Record<string, unknown>).next = base;
+    const head: Record<string, unknown> = { type: "object", properties: {} };
+    const link: Record<string, unknown> = {
+      type: "object",
+      properties: { n: { type: "integer" } },
+    };
+    (link.properties as Record<string, unknown>).next = link;
+    (head.properties as Record<string, unknown>).next = link;
+    expect(summarize(diffDocs(responseDoc(base), responseDoc(head)))).toEqual([
+      "safe RESP_PROPERTY_ADDED",
+    ]);
+  });
+});

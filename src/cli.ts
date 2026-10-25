@@ -55,6 +55,28 @@ interface Options {
   ignore: Set<string>;
 }
 
+function choice<T extends string>(flag: string, value: string, allowed: readonly T[]): T {
+  const found = allowed.find((candidate) => candidate === value);
+  if (found === undefined) {
+    throw new UsageError(`invalid ${flag} "${value}" (expected ${allowed.join(", ")})`);
+  }
+  return found;
+}
+
+/** Split `--ignore A,B --ignore C` into a validated set of rule IDs. */
+function ignoredRules(entries: string[]): Set<string> {
+  const ids = new Set(
+    entries
+      .flatMap((entry) => entry.split(","))
+      .map((id) => id.trim())
+      .filter((id) => id !== ""),
+  );
+  const unknown = [...ids].filter((id) => !isRuleId(id));
+  if (unknown.length > 0)
+    throw new UsageError(`unknown rule ID in --ignore: ${unknown.join(", ")}`);
+  return ids;
+}
+
 function parseOptions(argv: string[]): Options | "help" | "version" {
   let parsed;
   try {
@@ -77,36 +99,14 @@ function parseOptions(argv: string[]): Options | "help" | "version" {
   if (values.help) return "help";
   if (values.version) return "version";
 
-  const format = values.format;
-  if (!FORMATS.includes(format as Format)) {
-    throw new UsageError(`invalid --format "${format}" (expected ${FORMATS.join(", ")})`);
-  }
-  const failOn = values["fail-on"];
-  if (!FAIL_ON.includes(failOn as FailOn)) {
-    throw new UsageError(`invalid --fail-on "${failOn}" (expected ${FAIL_ON.join(", ")})`);
-  }
-  const ignore = new Set(
-    (values.ignore ?? [])
-      .flatMap((entry) => entry.split(","))
-      .map((id) => id.trim())
-      .filter((id) => id !== ""),
-  );
-  const unknown = [...ignore].filter((id) => !isRuleId(id));
-  if (unknown.length > 0) {
-    throw new UsageError(`unknown rule ID in --ignore: ${unknown.join(", ")}`);
-  }
+  const format = choice("--format", values.format, FORMATS);
+  const failOn = choice("--fail-on", values["fail-on"], FAIL_ON);
+  const ignore = ignoredRules(values.ignore ?? []);
   const [base, head, ...extra] = positionals;
   if (base === undefined || head === undefined || extra.length > 0) {
     throw new UsageError("expected exactly two arguments: <base> <head>");
   }
-  return {
-    base,
-    head,
-    format: format as Format,
-    failOn: failOn as FailOn,
-    includeSafe: values["include-safe"],
-    ignore,
-  };
+  return { base, head, format, failOn, includeSafe: values["include-safe"], ignore };
 }
 
 const RENDERERS: Record<Format, (report: Report) => string> = {

@@ -25,6 +25,10 @@ interface State {
   scope: string;
   /** Pairs (base, head) currently being compared further up the stack. */
   active: Map<Schema, Set<Schema>>;
+  /** Pairs already compared that produced no change; shared sub-schemas are compared once. */
+  clean: Map<Schema, Set<Schema>>;
+  /** Number of changes emitted so far. */
+  emitted: number;
 }
 
 /**
@@ -40,7 +44,17 @@ export function diffSchema(
   direction: Direction,
   scope: string,
 ): void {
-  const state: State = { emit, direction, scope, active: new Map() };
+  const state: State = {
+    emit: (...args) => {
+      state.emitted += 1;
+      emit(...args);
+    },
+    direction,
+    scope,
+    active: new Map(),
+    clean: new Map(),
+    emitted: 0,
+  };
   compareSchemas(base ?? ANY_SCHEMA, head ?? ANY_SCHEMA, loc, [], state, 0);
 }
 
@@ -110,7 +124,7 @@ function compareSchemas(
 ): void {
   const seen = state.active.get(base);
   // A pair already being compared higher up counts as equal for this branch.
-  if (seen?.has(head)) return;
+  if (seen?.has(head) || state.clean.get(base)?.has(head)) return;
   if (depth > MAX_DEPTH) {
     state.emit(
       "UNSUPPORTED_CONSTRUCT",
@@ -126,10 +140,16 @@ function compareSchemas(
   const set = seen ?? new Set<Schema>();
   set.add(head);
   state.active.set(base, set);
+  const before = state.emitted;
   try {
     compareContents(base, head, loc, path, state, depth);
   } finally {
     set.delete(head);
+  }
+  if (state.emitted === before) {
+    const clean = state.clean.get(base) ?? new Set<Schema>();
+    clean.add(head);
+    state.clean.set(base, clean);
   }
 }
 
@@ -408,6 +428,21 @@ function compareConstraints(
 // Objects
 // ---------------------------------------------------------------------------
 
+/** Property names that matter in this direction, with hidden (readOnly/writeOnly) ones dropped. */
+function relevantNames(
+  b: SchemaView,
+  h: SchemaView,
+  bProps: Map<string, Schema>,
+  hProps: Map<string, Schema>,
+): string[] {
+  // Properties that never travel in this direction are ignored, including their `required` entries.
+  const hidden = (name: string, props: Map<string, Schema>, view: SchemaView) =>
+    view.properties.has(name) && !props.has(name);
+  return [...new Set([...bProps.keys(), ...hProps.keys(), ...b.required, ...h.required])]
+    .filter((name) => !hidden(name, bProps, b) && !hidden(name, hProps, h))
+    .sort();
+}
+
 function compareObjects(
   b: SchemaView,
   h: SchemaView,
@@ -420,56 +455,40 @@ function compareObjects(
   const direction = state.direction;
   const bProps = visibleProperties(b, direction);
   const hProps = visibleProperties(h, direction);
-  // Properties that never travel in this direction (readOnly in requests, writeOnly in responses)
-  // are ignored entirely, including their `required` entries.
-  const hidden = (name: string, props: Map<string, Schema>, view: SchemaView) =>
-    view.properties.has(name) && !props.has(name);
-  const names = [...new Set([...bProps.keys(), ...hProps.keys(), ...b.required, ...h.required])]
-    .filter((name) => !hidden(name, bProps, b) && !hidden(name, hProps, h))
-    .sort();
 
-  for (const name of names) {
+  for (const name of relevantNames(b, h, bProps, hProps)) {
     const bs = bProps.get(name);
     const hs = hProps.get(name);
     const where = [...path, name];
     const at = display(where);
     if (bs && !hs) {
-      emit(
-        direction === "request" ? "REQ_PROPERTY_REMOVED" : "RESP_PROPERTY_REMOVED",
-        loc.removed("properties", name),
-        { at },
-      );
-      continue;
+      const id = direction === "request" ? "REQ_PROPERTY_REMOVED" : "RESP_PROPERTY_REMOVED";
+      emit(id, loc.removed("properties", name), { at });
+    } else if (!bs && hs) {
+      emitPropertyAdded(h.required.has(name), loc.added("properties", name), at, direction, emit);
+    } else {
+      if (bs && hs) {
+        const here = loc.descend(["properties", name], ["properties", name]);
+        compareSchemas(bs, hs, here, where, state, depth + 1);
+      }
+      const was = b.required.has(name);
+      compareRequired(was, h.required.has(name), loc.child("required"), at, direction, emit);
     }
-    if (!bs && hs) {
-      const added = loc.added("properties", name);
-      if (direction === "response") emit("RESP_PROPERTY_ADDED", added, { at });
-      else if (h.required.has(name))
-        emit("REQ_PROPERTY_REQUIRED_ADDED", added, { at, what: "added as required" });
-      else emit("REQ_PROPERTY_ADDED", added, { at });
-      continue;
-    }
-    if (bs && hs) {
-      compareSchemas(
-        bs,
-        hs,
-        loc.descend(["properties", name], ["properties", name]),
-        where,
-        state,
-        depth + 1,
-      );
-    }
-    compareRequired(
-      b.required.has(name),
-      h.required.has(name),
-      loc.child("required"),
-      at,
-      direction,
-      emit,
-    );
   }
 
   compareAdditionalProperties(b, h, loc, path, state, depth, emit);
+}
+
+function emitPropertyAdded(
+  required: boolean,
+  loc: Loc,
+  at: string,
+  direction: Direction,
+  emit: LocalEmit,
+): void {
+  if (direction === "response") emit("RESP_PROPERTY_ADDED", loc, { at });
+  else if (required) emit("REQ_PROPERTY_REQUIRED_ADDED", loc, { at, what: "added as required" });
+  else emit("REQ_PROPERTY_ADDED", loc, { at });
 }
 
 function compareRequired(
