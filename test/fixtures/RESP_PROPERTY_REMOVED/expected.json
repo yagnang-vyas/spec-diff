@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RESP_PROPERTY_REMOVED",
+    "severity": "breaking",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.responses.200.content.application/json.schema.properties.email",
+      "head": null
+    },
+    "message": "200 application/json: property \"email\" removed"
+  }
+]

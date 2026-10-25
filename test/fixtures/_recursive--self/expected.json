@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RESP_CONSTRAINT_LOOSENED",
+    "severity": "breaking",
+    "operation": "GET /categories",
+    "location": {
+      "base": "paths./categories.get.responses.200.content.application/json.schema.properties.items.items.properties.name",
+      "head": "paths./categories.get.responses.200.content.application/json.schema.properties.items.items.properties.name"
+    },
+    "message": "200 application/json: maxLength of \"items[].name\" loosened from 20 to 40"
+  }
+]

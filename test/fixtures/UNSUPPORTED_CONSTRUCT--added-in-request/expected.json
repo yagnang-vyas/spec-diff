@@ -1,0 +1,12 @@
+[
+  {
+    "id": "UNSUPPORTED_CONSTRUCT",
+    "severity": "info",
+    "operation": "POST /a",
+    "location": {
+      "base": null,
+      "head": "paths./a.post.requestBody.content.application/json.schema.properties.a.anyOf"
+    },
+    "message": "request body application/json: \"anyOf\" differs between versions at \"a\" (not analyzed, review manually)"
+  }
+]

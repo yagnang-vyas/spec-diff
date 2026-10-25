@@ -73,23 +73,28 @@ function serialization(param: JsonObject): string {
   return `style=${style}, explode=${String(explode)}`;
 }
 
-function parameterSchema(param: JsonObject): Schema | undefined {
-  if (isObject(param.schema)) return param.schema;
+function parameterSchema(param: JsonObject): { schema: Schema | undefined; path: string[] } {
+  if (isObject(param.schema)) return { schema: param.schema, path: ["schema"] };
   if (isObject(param.content)) {
-    const first = Object.values(param.content)[0];
-    if (isObject(first) && isObject(first.schema)) return first.schema;
+    const [mediaType, entry] = Object.entries(param.content)[0] ?? [];
+    if (mediaType !== undefined) {
+      const schema = isObject(entry) && isObject(entry.schema) ? entry.schema : undefined;
+      return { schema, path: ["content", mediaType, "schema"] };
+    }
   }
-  return undefined;
+  return { schema: undefined, path: ["schema"] };
 }
 
 function normalizeParameter(param: JsonObject, paramNames: string[]): NormalizedParameter {
   const location = String(param.in);
+  const { schema, path } = parameterSchema(param);
   return {
     key: parameterKey(param, paramNames),
     name: String(param.name),
     in: location,
     required: location === "path" ? true : param.required === true,
-    schema: parameterSchema(param),
+    schema,
+    schemaPath: path,
     serialization: serialization(param),
   };
 }

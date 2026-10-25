@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RESP_MEDIA_TYPE_REMOVED",
+    "severity": "breaking",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.responses.200.content.text/csv",
+      "head": null
+    },
+    "message": "200: response content type \"text/csv\" removed"
+  }
+]

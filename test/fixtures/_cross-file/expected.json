@@ -1,0 +1,22 @@
+[
+  {
+    "id": "RESP_PROPERTY_REMOVED",
+    "severity": "breaking",
+    "operation": "GET /pets",
+    "location": {
+      "base": "paths./pets.get.responses.200.content.application/json.schema.properties.owner.properties.phone",
+      "head": null
+    },
+    "message": "200 application/json: property \"owner.phone\" removed"
+  },
+  {
+    "id": "RESP_PROPERTY_BECAME_OPTIONAL",
+    "severity": "breaking",
+    "operation": "GET /pets",
+    "location": {
+      "base": "paths./pets.get.responses.200.content.application/json.schema.properties.owner.required",
+      "head": "paths./pets.get.responses.200.content.application/json.schema.properties.owner.required"
+    },
+    "message": "200 application/json: property \"owner.email\" is no longer always present (removed from required)"
+  }
+]

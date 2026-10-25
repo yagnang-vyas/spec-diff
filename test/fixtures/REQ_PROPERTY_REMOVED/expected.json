@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_PROPERTY_REMOVED",
+    "severity": "warning",
+    "operation": "POST /a",
+    "location": {
+      "base": "paths./a.post.requestBody.content.application/json.schema.properties.b",
+      "head": null
+    },
+    "message": "request body application/json: property \"b\" removed (servers may now reject or ignore it)"
+  }
+]

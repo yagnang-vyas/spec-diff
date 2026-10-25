@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_BECAME_NON_NULLABLE",
+    "severity": "breaking",
+    "operation": "POST /a",
+    "location": {
+      "base": "paths./a.post.requestBody.content.application/json.schema.properties.a",
+      "head": "paths./a.post.requestBody.content.application/json.schema.properties.a"
+    },
+    "message": "request body application/json: \"a\" no longer accepts null"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_ENUM_WIDENED",
+    "severity": "safe",
+    "operation": "POST /a",
+    "location": {
+      "base": "paths./a.post.requestBody.content.application/json.schema",
+      "head": "paths./a.post.requestBody.content.application/json.schema"
+    },
+    "message": "request body application/json: enum of value widened: added \"blue\""
+  }
+]

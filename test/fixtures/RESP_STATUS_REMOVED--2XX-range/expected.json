@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RESP_STATUS_REMOVED",
+    "severity": "breaking",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.responses.2XX",
+      "head": null
+    },
+    "message": "response status 2XX removed"
+  }
+]

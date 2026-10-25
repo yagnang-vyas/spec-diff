@@ -1,5 +1,6 @@
 import type { NormalizedBody } from "../model.js";
 import type { Emit, Loc } from "./context.js";
+import { diffSchema } from "./schema.js";
 
 export function diffRequestBody(
   base: NormalizedBody | undefined,
@@ -27,8 +28,18 @@ export function diffRequestBody(
     }
   }
   for (const [mediaType, entry] of head.content) {
-    if (!base.content.has(mediaType)) {
+    const before = base.content.get(mediaType);
+    if (!before) {
       emit("REQ_MEDIA_TYPE_ADDED", content.added(entry.key), { mediaType: entry.key });
+      continue;
     }
+    diffSchema(
+      before.schema,
+      entry.schema,
+      content.descend([before.key, "schema"], [entry.key, "schema"]),
+      emit,
+      "request",
+      `request body ${entry.key}`,
+    );
   }
 }

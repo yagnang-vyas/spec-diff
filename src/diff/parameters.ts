@@ -1,5 +1,6 @@
 import type { NormalizedOperation, NormalizedParameter } from "../model.js";
 import type { Emit, Loc } from "./context.js";
+import { diffSchema } from "./schema.js";
 
 /** Parameters are addressed by `parameters.<in>.<name>` rather than by array index. */
 function where(param: NormalizedParameter): string[] {
@@ -55,5 +56,13 @@ export function diffParameters(
         to: h.serialization,
       });
     }
+    diffSchema(
+      b.schema,
+      h.schema,
+      loc.descend([...where(b), ...b.schemaPath], [...where(h), ...h.schemaPath]),
+      emit,
+      "request",
+      `${h.in} parameter "${h.name}"`,
+    );
   }
 }

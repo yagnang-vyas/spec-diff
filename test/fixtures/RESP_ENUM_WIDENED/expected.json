@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RESP_ENUM_WIDENED",
+    "severity": "warning",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.responses.200.content.application/json.schema",
+      "head": "paths./a.get.responses.200.content.application/json.schema"
+    },
+    "message": "200 application/json: enum of value widened: added \"c\""
+  }
+]

@@ -47,6 +47,11 @@ describe("rule registry", () => {
     expect(undocumented).toEqual([]);
   });
 
+  it("only lists registered rules in SPEC.md", () => {
+    const listed = [...specDoc.matchAll(/^\| `([A-Z_]+)`/gm)].map((m) => m[1] ?? "");
+    expect(listed.filter((id) => !isRuleId(id))).toEqual([]);
+  });
+
   it("formats messages and rejects missing parameters", () => {
     expect(formatMessage("PATH_REMOVED", { path: "/a" })).toBe("path /a removed");
     expect(() => formatMessage("PATH_REMOVED")).toThrow(/missing message parameter "path"/);

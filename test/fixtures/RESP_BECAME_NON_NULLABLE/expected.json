@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RESP_BECAME_NON_NULLABLE",
+    "severity": "safe",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.responses.200.content.application/json.schema.properties.a",
+      "head": "paths./a.get.responses.200.content.application/json.schema.properties.a"
+    },
+    "message": "200 application/json: \"a\" can no longer be null"
+  }
+]

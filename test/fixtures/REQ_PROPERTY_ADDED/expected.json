@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_PROPERTY_ADDED",
+    "severity": "safe",
+    "operation": "POST /a",
+    "location": {
+      "base": null,
+      "head": "paths./a.post.requestBody.content.application/json.schema.properties.c"
+    },
+    "message": "request body application/json: optional property \"c\" added"
+  }
+]

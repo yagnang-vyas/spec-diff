@@ -2,6 +2,7 @@ import { HTTP_METHODS, type NormalizedOperation, type NormalizedPath } from "../
 import { Loc, createEmitter, type Change, type Emit } from "./context.js";
 import { diffParameters } from "./parameters.js";
 import { diffRequestBody } from "./requestBody.js";
+import { diffResponses } from "./responses.js";
 import { diffSecurity } from "./security.js";
 
 /** Diff the operations of one path that exists in both documents. */
@@ -35,5 +36,6 @@ function diffOperation(
   if (!base.deprecated && head.deprecated) emit("OP_DEPRECATED", loc.child("deprecated"));
   diffParameters(base, head, loc, emit);
   diffRequestBody(base.requestBody, head.requestBody, loc, emit);
+  diffResponses(base, head, loc, emit);
   diffSecurity(base, head, loc, emit);
 }

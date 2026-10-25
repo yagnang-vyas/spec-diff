@@ -1,0 +1,12 @@
+[
+  {
+    "id": "TYPE_CHANGED",
+    "severity": "breaking",
+    "operation": "POST /a",
+    "location": {
+      "base": "paths./a.post.requestBody.content.application/json.schema.items.properties.n",
+      "head": "paths./a.post.requestBody.content.application/json.schema.items.properties.n"
+    },
+    "message": "request body application/json: type of \"value[].n\" changed from string to integer"
+  }
+]

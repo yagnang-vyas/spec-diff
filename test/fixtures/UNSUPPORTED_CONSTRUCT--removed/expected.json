@@ -1,0 +1,12 @@
+[
+  {
+    "id": "UNSUPPORTED_CONSTRUCT",
+    "severity": "info",
+    "operation": "POST /a",
+    "location": {
+      "base": "paths./a.post.requestBody.content.application/json.schema.properties.a.not",
+      "head": null
+    },
+    "message": "request body application/json: \"not\" differs between versions at \"a\" (not analyzed, review manually)"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "REQ_CONSTRAINT_LOOSENED",
+    "severity": "safe",
+    "operation": "POST /a",
+    "location": {
+      "base": "paths./a.post.requestBody.content.application/json.schema",
+      "head": "paths./a.post.requestBody.content.application/json.schema"
+    },
+    "message": "request body application/json: maximum of value removed (was 9)"
+  },
+  {
+    "id": "REQ_CONSTRAINT_LOOSENED",
+    "severity": "safe",
+    "operation": "POST /a",
+    "location": {
+      "base": "paths./a.post.requestBody.content.application/json.schema",
+      "head": "paths./a.post.requestBody.content.application/json.schema"
+    },
+    "message": "request body application/json: minimum of value removed (was 1)"
+  }
+]

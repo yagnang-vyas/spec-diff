@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_PROPERTY_REQUIRED_ADDED",
+    "severity": "breaking",
+    "operation": "POST /a",
+    "location": {
+      "base": null,
+      "head": "paths./a.post.requestBody.content.application/json.schema.properties.c"
+    },
+    "message": "request body application/json: property \"c\" added as required"
+  }
+]

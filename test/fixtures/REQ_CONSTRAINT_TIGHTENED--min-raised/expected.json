@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_CONSTRAINT_TIGHTENED",
+    "severity": "breaking",
+    "operation": "POST /a",
+    "location": {
+      "base": "paths./a.post.requestBody.content.application/json.schema",
+      "head": "paths./a.post.requestBody.content.application/json.schema"
+    },
+    "message": "request body application/json: minimum of value tightened from 1 to 10"
+  }
+]

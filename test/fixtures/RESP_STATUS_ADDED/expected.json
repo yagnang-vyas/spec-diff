@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RESP_STATUS_ADDED",
+    "severity": "safe",
+    "operation": "GET /a",
+    "location": {
+      "base": null,
+      "head": "paths./a.get.responses.404"
+    },
+    "message": "response status 404 added"
+  }
+]

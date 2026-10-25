@@ -1,0 +1,12 @@
+[
+  {
+    "id": "UNSUPPORTED_CONSTRUCT",
+    "severity": "info",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.responses.200.content.application/json.schema.oneOf",
+      "head": "paths./a.get.responses.200.content.application/json.schema.oneOf"
+    },
+    "message": "200 application/json: \"oneOf\" differs between versions at value (not analyzed, review manually)"
+  }
+]

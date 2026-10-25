@@ -112,6 +112,152 @@ export const RULES = {
     template: 'request content type "{mediaType}" added',
   },
 
+  // Request schemas (parameters and request bodies): stricter is breaking
+  REQ_PROPERTY_REQUIRED_ADDED: {
+    severity: "breaking",
+    summary: "property became required, or a required property was added",
+    template: "property {at} {what}",
+  },
+  REQ_PROPERTY_REQUIRED_REMOVED: {
+    severity: "safe",
+    summary: "property is no longer required",
+    template: "property {at} is no longer required",
+  },
+  REQ_PROPERTY_ADDED: {
+    severity: "safe",
+    summary: "optional property added",
+    template: "optional property {at} added",
+  },
+  REQ_PROPERTY_REMOVED: {
+    severity: "warning",
+    summary: "property removed",
+    template: "property {at} removed (servers may now reject or ignore it)",
+  },
+  REQ_ENUM_NARROWED: {
+    severity: "breaking",
+    summary: "enum value removed, or enum added to a free value",
+    template: "enum of {at} narrowed: {detail}",
+  },
+  REQ_ENUM_WIDENED: {
+    severity: "safe",
+    summary: "enum value added, or enum removed",
+    template: "enum of {at} widened: {detail}",
+  },
+  REQ_CONSTRAINT_TIGHTENED: {
+    severity: "breaking",
+    summary: "constraint tightened, or an opaque constraint added or changed",
+    template: "{constraint} of {at} {change}",
+  },
+  REQ_CONSTRAINT_LOOSENED: {
+    severity: "safe",
+    summary: "constraint loosened or removed",
+    template: "{constraint} of {at} {change}",
+  },
+  REQ_ADDITIONAL_PROPERTIES_DISALLOWED: {
+    severity: "breaking",
+    summary: "additionalProperties changed to false",
+    template: "additional properties of {at} are no longer allowed",
+  },
+  REQ_ADDITIONAL_PROPERTIES_ALLOWED: {
+    severity: "safe",
+    summary: "additionalProperties changed from false",
+    template: "additional properties of {at} are now allowed",
+  },
+  REQ_BECAME_NON_NULLABLE: {
+    severity: "breaking",
+    summary: "value that could be null no longer can",
+    template: "{at} no longer accepts null",
+  },
+  REQ_BECAME_NULLABLE: {
+    severity: "safe",
+    summary: "value that could not be null now can",
+    template: "{at} now accepts null",
+  },
+
+  // Responses: looser or lossy is breaking
+  RESP_STATUS_REMOVED: {
+    severity: "breaking",
+    summary: "documented status code removed (warning unless 2xx)",
+    template: "response status {status} removed",
+  },
+  RESP_STATUS_ADDED: {
+    severity: "safe",
+    summary: "status code added",
+    template: "response status {status} added",
+  },
+  RESP_MEDIA_TYPE_REMOVED: {
+    severity: "breaking",
+    summary: "response content type removed",
+    template: 'response content type "{mediaType}" removed',
+  },
+  RESP_MEDIA_TYPE_ADDED: {
+    severity: "safe",
+    summary: "response content type added",
+    template: 'response content type "{mediaType}" added',
+  },
+  RESP_PROPERTY_REMOVED: {
+    severity: "breaking",
+    summary: "property removed",
+    template: "property {at} removed",
+  },
+  RESP_PROPERTY_ADDED: {
+    severity: "safe",
+    summary: "property added",
+    template: "property {at} added",
+  },
+  RESP_PROPERTY_BECAME_OPTIONAL: {
+    severity: "breaking",
+    summary: "property removed from required",
+    template: "property {at} is no longer always present (removed from required)",
+  },
+  RESP_PROPERTY_BECAME_REQUIRED: {
+    severity: "safe",
+    summary: "property added to required",
+    template: "property {at} is now always present (added to required)",
+  },
+  RESP_BECAME_NULLABLE: {
+    severity: "breaking",
+    summary: "value can now be null",
+    template: "{at} can now be null",
+  },
+  RESP_BECAME_NON_NULLABLE: {
+    severity: "safe",
+    summary: "value can no longer be null",
+    template: "{at} can no longer be null",
+  },
+  RESP_ENUM_WIDENED: {
+    severity: "warning",
+    summary: "enum value added, or enum removed",
+    template: "enum of {at} widened: {detail}",
+  },
+  RESP_ENUM_NARROWED: {
+    severity: "safe",
+    summary: "enum value removed, or enum added to a free value",
+    template: "enum of {at} narrowed: {detail}",
+  },
+  RESP_CONSTRAINT_LOOSENED: {
+    severity: "breaking",
+    summary: "constraint loosened or removed (warning for opaque changes)",
+    template: "{constraint} of {at} {change}",
+  },
+  RESP_CONSTRAINT_TIGHTENED: {
+    severity: "safe",
+    summary: "constraint tightened or added",
+    template: "{constraint} of {at} {change}",
+  },
+
+  // Both directions
+  TYPE_CHANGED: {
+    severity: "breaking",
+    summary: "type changed (safe when the change is compatible in this direction)",
+    template: "type of {at} changed from {from} to {to}",
+  },
+  UNSUPPORTED_CONSTRUCT: {
+    severity: "info",
+    summary: "an unanalyzed keyword differs between versions",
+    template: "{what} at {at} (not analyzed, review manually)",
+  },
+
   // Security
   SECURITY_ADDED: {
     severity: "breaking",

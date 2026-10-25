@@ -1,0 +1,7 @@
+Pet:
+  type: object
+  required: [name, owner]
+  properties:
+    name: {type: string}
+    owner:
+      $ref: "./head.owner.yaml"

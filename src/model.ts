@@ -41,6 +41,8 @@ export interface NormalizedParameter {
   in: string;
   required: boolean;
   schema: Schema | undefined;
+  /** Where `schema` lives relative to the parameter: `schema` or `content.<media type>.schema`. */
+  schemaPath: string[];
   /** Effective `style` / `explode` rendered as text, for comparison and messages. */
   serialization: string;
 }
