@@ -1,0 +1,29 @@
+openapi: 3.0.3
+info: {title: Mutual, version: "1"}
+paths:
+  /people:
+    get:
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+components:
+  schemas:
+    Person:
+      type: object
+      properties:
+        name: {type: string}
+        employer:
+          $ref: "#/components/schemas/Company"
+    Company:
+      type: object
+      properties:
+        title: {type: string}
+        staff:
+          type: array
+          items:
+            $ref: "#/components/schemas/Person"
+        founded: {type: integer}

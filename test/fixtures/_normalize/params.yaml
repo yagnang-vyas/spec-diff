@@ -1,0 +1,28 @@
+openapi: 3.0.3
+info: {title: Params, version: "1"}
+paths:
+  /users/{userId}/orders/{orderId}:
+    parameters:
+      - {name: userId, in: path, required: true, schema: {type: string}}
+      - {name: orderId, in: path, required: true, schema: {type: string}}
+      - {name: X-Request-Id, in: header, schema: {type: string}}
+      - {name: limit, in: query, schema: {type: integer}}
+    get:
+      parameters:
+        - {name: limit, in: query, required: true, schema: {type: integer, maximum: 50}}
+        - {name: x-request-id, in: header, schema: {type: string}}
+        - name: ids
+          in: query
+          schema: {type: array, items: {type: string}}
+        - name: filter
+          in: query
+          style: deepObject
+          explode: true
+          schema: {type: object}
+        - name: tags
+          in: cookie
+          schema: {type: string}
+      responses:
+        "200": {description: ok}
+        "2XX": {description: range}
+        default: {description: fallback}

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RESP_CONSTRAINT_TIGHTENED",
+    "severity": "safe",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.responses.200.content.application/json.schema",
+      "head": "paths./a.get.responses.200.content.application/json.schema"
+    },
+    "message": "200 application/json: maxLength of value tightened from 10 to 5"
+  }
+]

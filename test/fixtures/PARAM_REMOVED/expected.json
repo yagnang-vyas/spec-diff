@@ -1,0 +1,12 @@
+[
+  {
+    "id": "PARAM_REMOVED",
+    "severity": "warning",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.parameters.query.q",
+      "head": null
+    },
+    "message": "query parameter \"q\" removed"
+  }
+]

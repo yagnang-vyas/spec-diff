@@ -1,0 +1,12 @@
+[
+  {
+    "id": "PARAM_ADDED_REQUIRED",
+    "severity": "breaking",
+    "operation": "GET /a",
+    "location": {
+      "base": null,
+      "head": "paths./a.get.parameters.query.q"
+    },
+    "message": "required query parameter \"q\" added"
+  }
+]

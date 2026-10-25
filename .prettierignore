@@ -1,0 +1,6 @@
+dist
+coverage
+test/fixtures
+examples
+package-lock.json
+test/golden

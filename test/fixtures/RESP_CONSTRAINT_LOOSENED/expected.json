@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RESP_CONSTRAINT_LOOSENED",
+    "severity": "breaking",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.responses.200.content.application/json.schema",
+      "head": "paths./a.get.responses.200.content.application/json.schema"
+    },
+    "message": "200 application/json: maxLength of value loosened from 5 to 10"
+  }
+]

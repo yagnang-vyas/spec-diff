@@ -1,0 +1,12 @@
+[
+  {
+    "id": "TYPE_CHANGED",
+    "severity": "safe",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.responses.200.content.application/json.schema.properties.n",
+      "head": "paths./a.get.responses.200.content.application/json.schema.properties.n"
+    },
+    "message": "200 application/json: type of \"n\" changed from any to string"
+  }
+]

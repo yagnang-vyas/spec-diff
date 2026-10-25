@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RESP_MEDIA_TYPE_ADDED",
+    "severity": "safe",
+    "operation": "GET /a",
+    "location": {
+      "base": null,
+      "head": "paths./a.get.responses.200.content.text/csv"
+    },
+    "message": "200: response content type \"text/csv\" added"
+  }
+]

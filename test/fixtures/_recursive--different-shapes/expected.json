@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RESP_PROPERTY_ADDED",
+    "severity": "safe",
+    "operation": "GET /tree",
+    "location": {
+      "base": null,
+      "head": "paths./tree.get.responses.200.content.application/json.schema.properties.next.properties.weight"
+    },
+    "message": "200 application/json: property \"next.weight\" added"
+  }
+]

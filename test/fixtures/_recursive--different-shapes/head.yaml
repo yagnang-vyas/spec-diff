@@ -1,0 +1,27 @@
+openapi: 3.0.3
+info: {title: Shapes, version: "1"}
+paths:
+  /tree:
+    get:
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Node"
+components:
+  schemas:
+    Node:
+      type: object
+      properties:
+        id: {type: string}
+        next:
+          $ref: "#/components/schemas/Link"
+    Link:
+      type: object
+      properties:
+        id: {type: string}
+        weight: {type: number}
+        next:
+          $ref: "#/components/schemas/Link"

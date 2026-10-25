@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RESP_PROPERTY_BECAME_OPTIONAL",
+    "severity": "breaking",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.responses.200.content.application/json.schema.required",
+      "head": "paths./a.get.responses.200.content.application/json.schema.required"
+    },
+    "message": "200 application/json: property \"email\" is no longer always present (removed from required)"
+  }
+]

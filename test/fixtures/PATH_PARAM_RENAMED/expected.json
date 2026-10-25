@@ -1,0 +1,12 @@
+[
+  {
+    "id": "PATH_PARAM_RENAMED",
+    "severity": "info",
+    "operation": "/users/{userId}",
+    "location": {
+      "base": "paths./users/{id}",
+      "head": "paths./users/{userId}"
+    },
+    "message": "path template renamed from /users/{id} to /users/{userId} (same shape, treated as the same path)"
+  }
+]

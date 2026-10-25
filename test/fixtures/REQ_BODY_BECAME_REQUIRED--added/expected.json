@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_BODY_BECAME_REQUIRED",
+    "severity": "breaking",
+    "operation": "POST /a",
+    "location": {
+      "base": null,
+      "head": "paths./a.post.requestBody"
+    },
+    "message": "request body is now required"
+  }
+]

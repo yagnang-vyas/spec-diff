@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_MEDIA_TYPE_ADDED",
+    "severity": "safe",
+    "operation": "POST /a",
+    "location": {
+      "base": null,
+      "head": "paths./a.post.requestBody.content.application/xml"
+    },
+    "message": "request content type \"application/xml\" added"
+  }
+]

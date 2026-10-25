@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_CONSTRAINT_TIGHTENED",
+    "severity": "breaking",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.parameters.query.limit.schema",
+      "head": "paths./a.get.parameters.query.limit.schema"
+    },
+    "message": "query parameter \"limit\": maximum of value tightened from 100 to 50"
+  }
+]

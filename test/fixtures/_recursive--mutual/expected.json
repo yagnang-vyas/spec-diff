@@ -1,0 +1,12 @@
+[
+  {
+    "id": "TYPE_CHANGED",
+    "severity": "breaking",
+    "operation": "GET /people",
+    "location": {
+      "base": "paths./people.get.responses.200.content.application/json.schema.properties.employer.properties.founded",
+      "head": "paths./people.get.responses.200.content.application/json.schema.properties.employer.properties.founded"
+    },
+    "message": "200 application/json: type of \"employer.founded\" changed from integer to string"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_BODY_REMOVED",
+    "severity": "warning",
+    "operation": "POST /a",
+    "location": {
+      "base": "paths./a.post.requestBody",
+      "head": null
+    },
+    "message": "request body removed (servers may now reject or ignore it)"
+  }
+]

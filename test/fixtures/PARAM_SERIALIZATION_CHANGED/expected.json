@@ -1,0 +1,12 @@
+[
+  {
+    "id": "PARAM_SERIALIZATION_CHANGED",
+    "severity": "breaking",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.parameters.query.ids",
+      "head": "paths./a.get.parameters.query.ids"
+    },
+    "message": "query parameter \"ids\" serialization changed from (style=form, explode=true) to (style=form, explode=false)"
+  }
+]

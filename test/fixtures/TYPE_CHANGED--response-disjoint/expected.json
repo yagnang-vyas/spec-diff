@@ -1,0 +1,22 @@
+[
+  {
+    "id": "TYPE_CHANGED",
+    "severity": "breaking",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.responses.200.content.application/json.schema.properties.n",
+      "head": "paths./a.get.responses.200.content.application/json.schema.properties.n"
+    },
+    "message": "200 application/json: type of \"n\" changed from string to integer"
+  },
+  {
+    "id": "TYPE_CHANGED",
+    "severity": "breaking",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.responses.200.content.application/json.schema.properties.tags",
+      "head": "paths./a.get.responses.200.content.application/json.schema.properties.tags"
+    },
+    "message": "200 application/json: type of \"tags\" changed from array to object"
+  }
+]

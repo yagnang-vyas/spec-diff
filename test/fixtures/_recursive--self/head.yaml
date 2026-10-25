@@ -1,0 +1,31 @@
+openapi: 3.0.3
+info: {title: Categories, version: "1"}
+paths:
+  /categories:
+    get:
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Category"
+components:
+  schemas:
+    Category:
+      type: object
+      required: [name]
+      properties:
+        name: {type: string, maxLength: 40}
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/Category"
+        parent:
+          $ref: "#/components/schemas/Category"

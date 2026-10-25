@@ -1,0 +1,15 @@
+openapi: 3.0.3
+info:
+  title: Fixture
+  version: "1.0.0"
+paths:
+  /a:
+    get:
+      parameters:
+        - name: token
+          in: header
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ok

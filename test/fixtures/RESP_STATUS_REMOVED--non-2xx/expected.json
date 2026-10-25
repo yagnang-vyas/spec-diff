@@ -1,0 +1,12 @@
+[
+  {
+    "id": "RESP_STATUS_REMOVED",
+    "severity": "warning",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.responses.404",
+      "head": null
+    },
+    "message": "response status 404 removed"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_ENUM_NARROWED",
+    "severity": "breaking",
+    "operation": "GET /a/{kind}",
+    "location": {
+      "base": "paths./a/{kind}.get.parameters.path.kind.schema",
+      "head": "paths./a/{kind}.get.parameters.path.kind.schema"
+    },
+    "message": "path parameter \"kind\": enum of value narrowed: removed \"y\""
+  }
+]

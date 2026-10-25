@@ -1,0 +1,12 @@
+[
+  {
+    "id": "PATH_ADDED",
+    "severity": "safe",
+    "operation": "/b",
+    "location": {
+      "base": null,
+      "head": "paths./b"
+    },
+    "message": "path /b added"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_ADDITIONAL_PROPERTIES_ALLOWED",
+    "severity": "safe",
+    "operation": "POST /a",
+    "location": {
+      "base": "paths./a.post.requestBody.content.application/json.schema.additionalProperties",
+      "head": "paths./a.post.requestBody.content.application/json.schema.additionalProperties"
+    },
+    "message": "request body application/json: additional properties of value are now allowed"
+  }
+]
