@@ -23,8 +23,8 @@ export function renderMarkdown(report: Report): string {
   const lines = [
     "## SpecDiff report",
     "",
-    `Base: ${codeSpan(describeSpec(report.base))}  `,
-    `Head: ${codeSpan(describeSpec(report.head))}`,
+    `- Base: ${codeSpan(describeSpec(report.base))}`,
+    `- Head: ${codeSpan(describeSpec(report.head))}`,
     "",
     "| Severity | Changes |",
     "| --- | ---: |",

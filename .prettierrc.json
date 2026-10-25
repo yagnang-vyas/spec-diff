@@ -1,1 +1,5 @@
-{ "printWidth": 100, "trailingComma": "all" }
+{
+  "printWidth": 100,
+  "trailingComma": "all",
+  "overrides": [{ "files": "*.md", "options": { "embeddedLanguageFormatting": "off" } }]
+}

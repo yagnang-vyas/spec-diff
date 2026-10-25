@@ -1,7 +1,7 @@
 ## SpecDiff report
 
-Base: `examples/bookstore/v1.yaml (Lantern Books API 1.0.0, OpenAPI 3.0.3)`  
-Head: `examples/bookstore/v2.yaml (Lantern Books API 2.0.0, OpenAPI 3.0.3)`
+- Base: `examples/bookstore/v1.yaml (Lantern Books API 1.0.0, OpenAPI 3.0.3)`
+- Head: `examples/bookstore/v2.yaml (Lantern Books API 2.0.0, OpenAPI 3.0.3)`
 
 | Severity | Changes |
 | --- | ---: |
