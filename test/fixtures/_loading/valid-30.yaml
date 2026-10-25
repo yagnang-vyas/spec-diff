@@ -1,0 +1,10 @@
+openapi: 3.0.3
+info:
+  title: Library
+  version: 1.2.0
+paths:
+  /books:
+    get:
+      responses:
+        "200":
+          description: ok
