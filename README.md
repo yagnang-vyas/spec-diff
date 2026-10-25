@@ -17,7 +17,7 @@ clients, with the rule that fired and where in each document it happened.
 - Exit codes built for CI, configurable with `--fail-on`.
 - Honest about its limits: constructs it does not analyze are reported, not ignored.
 
-<!-- Live Playground: once the site in web/ is deployed, add its URL here as "**[Live Playground](URL)**". -->
+**[Live Playground](https://specdiff.netlify.app/)**: try SpecDiff in the browser, no install needed.
 
 ## Install
 
