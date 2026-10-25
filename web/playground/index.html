@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SpecDiff Playground</title>
+    <meta
+      name="description"
+      content="Compare two OpenAPI 3.x documents in your browser with the SpecDiff engine. Nothing is uploaded."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../src/styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap wide">
+        <a class="brand" href="../">Spec<span>Diff</span></a>
+        <nav class="nav" aria-label="Primary">
+          <a href="../#how-it-works">How it works</a>
+          <a href="../#get-started">Get started</a>
+          <a href="./" aria-current="page">Playground</a>
+          <a href="https://github.com/yagnang-vyas/spec-diff">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="wrap wide">
+      <div class="pg-head">
+        <h1>Playground</h1>
+        <p>
+          Paste or load two OpenAPI 3.0.x / 3.1.x documents (YAML or JSON) and compare them with the
+          SpecDiff engine. Everything runs in this page: your documents are not uploaded, stored or
+          put in the URL.
+        </p>
+      </div>
+
+      <div class="toolbar" role="group" aria-label="Playground controls">
+        <div class="field">
+          <label for="example-select">Example</label>
+          <select id="example-select"></select>
+        </div>
+        <button type="button" class="btn" id="load-example">Load example</button>
+        <button type="button" class="btn" id="reset">Reset</button>
+        <span class="spacer"></span>
+        <div class="field">
+          <label for="fail-on">Fail on (like <code>--fail-on</code>)</label>
+          <select id="fail-on">
+            <option value="breaking" selected>breaking</option>
+            <option value="warning">warning</option>
+            <option value="never">never</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="ignore">Ignore rules (like <code>--ignore</code>)</label>
+          <input id="ignore" type="text" placeholder="OP_REMOVED, PATH_ADDED" autocomplete="off" spellcheck="false" />
+        </div>
+        <button type="button" class="btn primary" id="compare">Compare</button>
+      </div>
+
+      <div class="editors">
+        <section class="editor" id="editor-before" aria-labelledby="before-label">
+          <header>
+            <label id="before-label" for="before">Before (original)</label>
+            <label class="btn small" for="before-file">Open file…</label>
+            <input id="before-file" type="file" accept=".yaml,.yml,.json,application/json,text/yaml" class="sr-only" />
+            <button type="button" class="btn small" id="clear-before">Clear</button>
+          </header>
+          <textarea id="before" spellcheck="false" autocomplete="off" autocapitalize="off" wrap="off" aria-describedby="before-info"></textarea>
+          <footer><span id="before-info"></span><span class="problem" id="before-problem"></span></footer>
+        </section>
+        <section class="editor" id="editor-after" aria-labelledby="after-label">
+          <header>
+            <label id="after-label" for="after">After (updated)</label>
+            <label class="btn small" for="after-file">Open file…</label>
+            <input id="after-file" type="file" accept=".yaml,.yml,.json,application/json,text/yaml" class="sr-only" />
+            <button type="button" class="btn small" id="clear-after">Clear</button>
+          </header>
+          <textarea id="after" spellcheck="false" autocomplete="off" autocapitalize="off" wrap="off" aria-describedby="after-info"></textarea>
+          <footer><span id="after-info"></span><span class="problem" id="after-problem"></span></footer>
+        </section>
+      </div>
+      <p class="privacy" id="example-description"></p>
+
+      <div id="alert" role="alert" hidden></div>
+      <div id="stale" class="privacy" hidden>The documents changed after this comparison. Press Compare to update the results.</div>
+      <div id="results" class="results" aria-live="polite"></div>
+      <noscript><p class="alert">The Playground needs JavaScript to run the comparison in your browser.</p></noscript>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap wide">
+        <p>
+          Uses the SpecDiff comparison engine compiled for the browser. Limits: OpenAPI 3.0.x/3.1.x
+          only, up to 1 MB per document, and <code>$ref</code>s must point inside the document. See
+          the <a href="../#cli-and-playground">CLI vs. Playground</a> notes.
+        </p>
+      </div>
+    </footer>
+    <script type="module" src="../src/playground.ts"></script>
+  </body>
+</html>

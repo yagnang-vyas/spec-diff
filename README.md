@@ -17,6 +17,8 @@ clients, with the rule that fired and where in each document it happened.
 - Exit codes built for CI, configurable with `--fail-on`.
 - Honest about its limits: constructs it does not analyze are reported, not ignored.
 
+<!-- Live Playground: once the site in web/ is deployed, add its URL here as "**[Live Playground](URL)**". -->
+
 ## Install
 
 SpecDiff is not published to npm. Install it from a clone (Node.js 22.19 or newer):
@@ -412,6 +414,10 @@ UPDATE_GOLDEN=1 npm test   # regenerate the bookstore golden files, then review 
 ```
 
 See [SPEC.md](SPEC.md) for the specification and [AGENTS.md](AGENTS.md) for contributor notes.
+
+The [`web/`](web) directory holds the project site and an in-browser Playground. It is a separate
+static app with its own dependencies and is not part of the published package; see
+[`web/README.md`](web/README.md).
 
 ## License
 

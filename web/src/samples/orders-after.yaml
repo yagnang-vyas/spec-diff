@@ -1,0 +1,74 @@
+openapi: 3.0.3
+info:
+  title: Orders API
+  version: 2.0.0
+paths:
+  /orders:
+    get:
+      operationId: listOrders
+      parameters:
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [open, shipped, refunded]
+      responses:
+        "200":
+          description: A list of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+    post:
+      operationId: createOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [sku, quantity, currency]
+              properties:
+                sku: { type: string }
+                quantity: { type: integer, maximum: 50 }
+                currency: { type: string }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /orders/{orderId}:
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      operationId: getOrder
+      responses:
+        "200":
+          description: One order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /orders/{orderId}/refund:
+    post:
+      operationId: refundOrder
+      responses:
+        "202":
+          description: Refund accepted
+components:
+  schemas:
+    Order:
+      type: object
+      required: [id, sku, quantity]
+      properties:
+        id: { type: string }
+        sku: { type: string }
+        quantity: { type: integer }
+        total: { type: number }
