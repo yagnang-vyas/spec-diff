@@ -1,0 +1,5 @@
+dist
+coverage
+test/fixtures
+examples
+package-lock.json
