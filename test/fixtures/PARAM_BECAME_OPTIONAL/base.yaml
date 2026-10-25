@@ -1,0 +1,16 @@
+openapi: 3.0.3
+info:
+  title: Fixture
+  version: "1.0.0"
+paths:
+  /a:
+    get:
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ok

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "OP_ADDED",
+    "severity": "safe",
+    "operation": "POST /a",
+    "location": {
+      "base": null,
+      "head": "paths./a.post"
+    },
+    "message": "operation POST /a added"
+  }
+]

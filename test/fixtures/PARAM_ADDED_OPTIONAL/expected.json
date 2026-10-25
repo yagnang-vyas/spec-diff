@@ -1,0 +1,12 @@
+[
+  {
+    "id": "PARAM_ADDED_OPTIONAL",
+    "severity": "safe",
+    "operation": "GET /a",
+    "location": {
+      "base": null,
+      "head": "paths./a.get.parameters.query.q"
+    },
+    "message": "optional query parameter \"q\" added"
+  }
+]

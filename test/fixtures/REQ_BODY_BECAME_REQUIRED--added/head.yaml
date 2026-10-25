@@ -1,0 +1,16 @@
+openapi: 3.0.3
+info:
+  title: Fixture
+  version: "1.0.0"
+paths:
+  /a:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: ok

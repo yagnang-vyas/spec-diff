@@ -1,0 +1,16 @@
+openapi: 3.0.3
+info:
+  title: Fixture
+  version: "1.0.0"
+paths:
+  /users/{id}:
+    get:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ok

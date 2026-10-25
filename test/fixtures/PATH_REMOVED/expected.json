@@ -1,0 +1,12 @@
+[
+  {
+    "id": "PATH_REMOVED",
+    "severity": "breaking",
+    "operation": "/b",
+    "location": {
+      "base": "paths./b",
+      "head": null
+    },
+    "message": "path /b removed"
+  }
+]

@@ -34,8 +34,8 @@ export async function loadSpec(file: string): Promise<LoadedSpec> {
     info: {
       file,
       openapi,
-      title: typeof info.title === "string" ? info.title : "",
-      version: typeof info.version === "string" ? info.version : "",
+      title: String(info.title),
+      version: String(info.version),
     },
     document: root,
   };

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "PARAM_LOCATION_CHANGED",
+    "severity": "breaking",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.parameters.query.token",
+      "head": "paths./a.get.parameters.header.token"
+    },
+    "message": "parameter \"token\" moved from query to header"
+  }
+]

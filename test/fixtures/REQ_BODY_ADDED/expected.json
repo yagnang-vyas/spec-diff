@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_BODY_ADDED",
+    "severity": "safe",
+    "operation": "POST /a",
+    "location": {
+      "base": null,
+      "head": "paths./a.post.requestBody"
+    },
+    "message": "optional request body added"
+  }
+]

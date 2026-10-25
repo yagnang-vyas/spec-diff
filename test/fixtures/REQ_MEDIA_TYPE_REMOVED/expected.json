@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_MEDIA_TYPE_REMOVED",
+    "severity": "breaking",
+    "operation": "POST /a",
+    "location": {
+      "base": "paths./a.post.requestBody.content.application/xml",
+      "head": null
+    },
+    "message": "request content type \"application/xml\" removed"
+  }
+]

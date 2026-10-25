@@ -1,0 +1,12 @@
+[
+  {
+    "id": "OP_REMOVED",
+    "severity": "breaking",
+    "operation": "POST /a",
+    "location": {
+      "base": "paths./a.post",
+      "head": null
+    },
+    "message": "operation POST /a removed"
+  }
+]

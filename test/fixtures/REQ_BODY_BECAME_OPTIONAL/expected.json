@@ -1,0 +1,12 @@
+[
+  {
+    "id": "REQ_BODY_BECAME_OPTIONAL",
+    "severity": "safe",
+    "operation": "POST /a",
+    "location": {
+      "base": "paths./a.post.requestBody.required",
+      "head": "paths./a.post.requestBody.required"
+    },
+    "message": "request body is now optional"
+  }
+]

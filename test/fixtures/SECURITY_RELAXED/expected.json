@@ -1,0 +1,12 @@
+[
+  {
+    "id": "SECURITY_RELAXED",
+    "severity": "safe",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.security",
+      "head": "paths./a.get.security"
+    },
+    "message": "security requirement became less strict (was apiKey, now none)"
+  }
+]

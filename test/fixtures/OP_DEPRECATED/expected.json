@@ -1,0 +1,12 @@
+[
+  {
+    "id": "OP_DEPRECATED",
+    "severity": "warning",
+    "operation": "GET /a",
+    "location": {
+      "base": "paths./a.get.deprecated",
+      "head": "paths./a.get.deprecated"
+    },
+    "message": "operation is now deprecated"
+  }
+]
