@@ -1,5 +1,10 @@
 # SpecDiff
 
+[![npm version](https://img.shields.io/npm/v/specdiff.svg)](https://www.npmjs.com/package/specdiff)
+[![CI](https://github.com/yagnang-vyas/spec-diff/actions/workflows/ci.yml/badge.svg)](https://github.com/yagnang-vyas/spec-diff/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/specdiff.svg)](LICENSE)
+[![node](https://img.shields.io/node/v/specdiff.svg)](package.json)
+
 SpecDiff compares two OpenAPI 3.x documents and classifies every contract change as **breaking**,
 **warning**, **safe** or **info**, so API changes can be gated in pull requests instead of being
 discovered by mobile and partner clients after a deploy.
@@ -21,7 +26,21 @@ clients, with the rule that fired and where in each document it happened.
 
 ## Install
 
-SpecDiff is not published to npm. Install it from a clone (Node.js 22.19 or newer):
+SpecDiff needs Node.js 22.19 or newer. It is published on npm as
+[`specdiff`](https://www.npmjs.com/package/specdiff).
+
+```sh
+npm install --global specdiff          # installs the `specdiff` command
+specdiff --version
+
+npx specdiff base.yaml head.yaml       # or run it once without installing
+npm install --save-dev specdiff        # or pin it per project, then: npx specdiff ...
+```
+
+To try it without installing anything, use the
+[Playground](https://specdiff.netlify.app/playground/).
+
+To build from source instead:
 
 ```sh
 git clone https://github.com/yagnang-vyas/spec-diff.git
@@ -363,6 +382,10 @@ jobs:
 The job only needs read access. This recipe is exercised by the test suite against two commits of the bookstore example (see
 `test/integration/ci-recipe.test.ts`). The `git clone` line tracks the default branch; pin it to a
 commit once you have chosen one.
+
+With the npm package you can skip the clone: replace the install step with
+`npm install --global specdiff@<version>` (pinning a version) and call `specdiff` instead of
+`node "$SPECDIFF"`. The behavior and exit codes are the same.
 
 ## Unsupported constructs
 
