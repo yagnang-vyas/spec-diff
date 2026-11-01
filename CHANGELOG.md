@@ -4,9 +4,9 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [0.1.0] - Unreleased
+## [0.1.0] - 2026-11-01
 
-First version.
+First release.
 
 ### Added
 
@@ -26,3 +26,8 @@ First version.
   golden end-to-end test on a 33-operation example (`examples/bookstore`).
 - GitHub Actions workflow for the project and a documented recipe for gating a pull request's
   OpenAPI file against its base branch.
+- Publish-ready npm package: `specdiff` exposes a `specdiff` binary, ships only `dist/`, the README,
+  the LICENSE and this changelog, and builds and runs the full check before every publish.
+- Landing page and in-browser Playground at <https://specdiff.netlify.app/>.
+
+[0.1.0]: https://github.com/yagnang-vyas/spec-diff/releases/tag/v0.1.0
