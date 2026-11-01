@@ -39,14 +39,15 @@ describe("landing page", () => {
     expect(landing).toContain('href="https://github.com/yagnang-vyas/spec-diff">View on GitHub');
   });
 
-  it("links only to the repository, anchors and the Playground", () => {
+  it("links only to the repository, npm, anchors and the Playground", () => {
     const hrefs = [...landing.matchAll(/href="([^"]+)"/g)].map((m) => m[1]!);
     for (const href of hrefs) {
       expect(
         href.startsWith("#") ||
           href.startsWith("./") ||
           href.startsWith("/favicon") ||
-          href.startsWith("https://github.com/yagnang-vyas/spec-diff"),
+          href.startsWith("https://github.com/yagnang-vyas/spec-diff") ||
+          href === "https://www.npmjs.com/package/specdiff",
         href,
       ).toBe(true);
     }
@@ -58,7 +59,13 @@ describe("landing page", () => {
     }
   });
 
-  it("does not invent a live demo URL or metrics", () => {
-    expect(landing).not.toMatch(/netlify\.app|https?:\/\/(?!github\.com)/);
+  it("shows the npm install steps", () => {
+    expect(landing).toContain("npm install --global specdiff");
+    expect(landing).toContain("npx specdiff base.yaml head.yaml");
+    expect(landing).not.toContain("not published to npm");
+  });
+
+  it("does not invent other URLs or metrics", () => {
+    expect(landing).not.toMatch(/netlify\.app|https?:\/\/(?!github\.com|www\.npmjs\.com)/);
   });
 });
