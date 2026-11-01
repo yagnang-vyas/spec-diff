@@ -92,7 +92,7 @@ specdiff examples/bookstore/v1.yaml examples/bookstore/v2.yaml
 ```
 
 ```text
-specdiff 0.1.0
+specdiff 0.1.1
 base: examples/bookstore/v1.yaml (Lantern Books API 1.0.0, OpenAPI 3.0.3)
 head: examples/bookstore/v2.yaml (Lantern Books API 2.0.0, OpenAPI 3.0.3)
 
@@ -237,7 +237,7 @@ specdiff examples/bookstore/v1.yaml examples/bookstore/v2.yaml --format json --i
   "schemaVersion": 1,
   "tool": {
     "name": "specdiff",
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
   "base": {
     "file": "examples/bookstore/v1.yaml",

@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-11-01
+
+### Fixed
+
+- README license badge no longer depends on Shields.io's npm license lookup (which could show
+  "package not found"); it now uses a static MIT badge.
+
 ## [0.1.0] - 2026-11-01
 
 First release.
@@ -30,4 +37,5 @@ First release.
   the LICENSE and this changelog, and builds and runs the full check before every publish.
 - Landing page and in-browser Playground at <https://specdiff.netlify.app/>.
 
+[0.1.1]: https://github.com/yagnang-vyas/spec-diff/releases/tag/v0.1.1
 [0.1.0]: https://github.com/yagnang-vyas/spec-diff/releases/tag/v0.1.0

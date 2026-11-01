@@ -1,4 +1,4 @@
-specdiff 0.1.0
+specdiff 0.1.1
 base: examples/bookstore/v1.yaml (Lantern Books API 1.0.0, OpenAPI 3.0.3)
 head: examples/bookstore/v2.yaml (Lantern Books API 2.0.0, OpenAPI 3.0.3)
 

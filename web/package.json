@@ -1,6 +1,6 @@
 {
   "name": "specdiff-web",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Landing page and in-browser Playground for SpecDiff. Not part of the published specdiff package.",
   "license": "MIT",

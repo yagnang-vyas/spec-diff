@@ -201,7 +201,7 @@ JSON (`schemaVersion: 1`):
 ```json
 {
   "schemaVersion": 1,
-  "tool": { "name": "specdiff", "version": "0.1.0" },
+  "tool": { "name": "specdiff", "version": "0.1.1" },
   "base": { "file": "...", "openapi": "3.0.3", "title": "...", "version": "..." },
   "head": { "file": "...", "openapi": "3.1.0", "title": "...", "version": "..." },
   "changes": [
