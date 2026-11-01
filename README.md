@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/specdiff.svg)](https://www.npmjs.com/package/specdiff)
 [![CI](https://github.com/yagnang-vyas/spec-diff/actions/workflows/ci.yml/badge.svg)](https://github.com/yagnang-vyas/spec-diff/actions/workflows/ci.yml)
-[![license](https://img.shields.io/npm/l/specdiff.svg)](LICENSE)
+[![license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![node](https://img.shields.io/node/v/specdiff.svg)](package.json)
 
 SpecDiff compares two OpenAPI 3.x documents and classifies every contract change as **breaking**,
