@@ -148,14 +148,15 @@ Summary: 10 breaking, 1 warning, 0 info (2 safe hidden, use --include-safe to li
         <div class="wrap">
           <h2>Get started</h2>
           <p class="sub">
-            SpecDiff is not published to npm yet. Install it from a clone (Node.js 22.19 or newer):
+            Install SpecDiff from npm (Node.js 22.19 or newer), or run it once with
+            <code>npx</code>:
           </p>
           <div class="two-col">
-            <pre class="code"><code>git clone https://github.com/yagnang-vyas/spec-diff.git
-cd spec-diff
-npm ci
-npm run build
-node dist/cli.js --help   # or: npm link</code></pre>
+            <pre class="code"><code>npm install --global specdiff
+specdiff --version
+
+# or without installing
+npx specdiff base.yaml head.yaml</code></pre>
             <pre class="code"><code>specdiff &lt;base&gt; &lt;head&gt; \
   [--format text|json|markdown] \
   [--fail-on breaking|warning|never] \
@@ -164,7 +165,9 @@ node dist/cli.js --help   # or: npm link</code></pre>
           <p class="sub" style="margin-top:16px">
             Exit <code>0</code> means nothing at or above the <code>--fail-on</code> threshold,
             <code>1</code> means changes at or above it, and <code>2</code> means a usage or input
-            error. A GitHub Actions recipe is in the
+            error. The package is on
+            <a href="https://www.npmjs.com/package/specdiff">npm</a>; to build from source, see the
+            <a href="https://github.com/yagnang-vyas/spec-diff#install">README</a>. A GitHub Actions recipe is in the
             <a href="https://github.com/yagnang-vyas/spec-diff#ci-recipe-github-actions">README</a>.
           </p>
         </div>
