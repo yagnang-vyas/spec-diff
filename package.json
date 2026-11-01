@@ -2,6 +2,26 @@
   "name": "specdiff",
   "version": "0.1.0",
   "description": "Compare two OpenAPI 3.x documents and classify every change as breaking, warning or safe.",
+  "keywords": [
+    "openapi",
+    "openapi3",
+    "swagger",
+    "api",
+    "diff",
+    "breaking-changes",
+    "api-compatibility",
+    "contract",
+    "cli",
+    "ci"
+  ],
+  "homepage": "https://specdiff.netlify.app/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yagnang-vyas/spec-diff.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yagnang-vyas/spec-diff/issues"
+  },
   "license": "MIT",
   "author": "Yagnang Vyas",
   "type": "module",
@@ -22,7 +42,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . && prettier --check .",
     "test": "vitest run --coverage",
-    "check": "npm run typecheck && npm run lint && npm run build && publint && npm run test"
+    "check": "npm run typecheck && npm run lint && npm run build && publint && npm run test",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run check"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^13.1.0"
@@ -40,5 +62,8 @@
     "typescript-eslint": "^8.72.0",
     "vitest": "^5.0.5",
     "yaml": "^2.9.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
